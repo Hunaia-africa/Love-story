@@ -1,90 +1,110 @@
 "use client";
 
+/* Image 6 — villa etching, "The Venue", Google map, closing note. */
+
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
-import Placeholder from "@/components/Placeholder";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
+import { Villa } from "@/components/decor";
 import { colors } from "@/theme/tokens";
 
-const IconWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-`;
+const VillaWrap = styled.div`
+  width: clamp(180px, 26vw, 250px);
+  margin: 0 auto -0.4rem;
+  color: #6b5138;
 
-const MapWrap = styled.div`
-  max-width: 480px;
-  margin: 3rem auto 1.5rem;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid rgba(43, 33, 28, 0.15);
-`;
-
-const Caption = styled.p`
-  text-align: center;
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: ${colors.cocoa};
-  margin-top: 1rem;
-`;
-
-const LinkBtn = styled.a`
-  display: block;
-  width: fit-content;
-  margin: 1.5rem auto 0;
-  font-family: var(--font-display);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  padding: 0.9rem 1.8rem;
-  border-radius: 999px;
-  background: ${colors.bronze};
-  color: ${colors.ivory};
-
-  &:hover {
-    background: ${colors.cocoa};
+  svg {
+    width: 100%;
+    height: auto;
   }
 `;
+
+const Lead = styled(BodyItalic)`
+  max-width: 52ch;
+  margin: 1.6rem auto 2.4rem;
+`;
+
+const MapFrame = styled.div`
+  width: min(760px, 100%);
+  margin: 0 auto;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(46, 36, 29, 0.18);
+  box-shadow: 0 16px 38px rgba(43, 33, 28, 0.16);
+  background: #e8e6e1;
+
+  iframe {
+    display: block;
+    width: 100%;
+    height: clamp(320px, 52vh, 460px);
+    border: 0;
+  }
+`;
+
+const MapNote = styled(BodyItalic)`
+  margin-top: 2.2rem;
+  color: ${colors.espresso};
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+`;
+
+const MapLink = styled.a`
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${colors.rust};
+  text-decoration: none;
+  border-bottom: 1px solid ${colors.rust};
+  padding-bottom: 3px;
+
+  &:hover {
+    color: ${colors.bronze};
+    border-color: ${colors.bronze};
+  }
+`;
+
+const Centered = styled.div`
+  text-align: center;
+`;
+
+const MAP_QUERY = "Little Home Hotel, Amalemba Rd, Kakamega, Kenya";
 
 export default function VenuePage() {
   return (
     <PageShell>
-      <IconWrap>
-        <svg width="70" height="70" viewBox="0 0 100 100" fill="none">
-          <path
-            d="M30 40 L30 85 L70 85 L70 40"
-            stroke={colors.bark}
-            strokeWidth="2"
-          />
-          <path
-            d="M20 45 L50 15 L80 45"
-            stroke={colors.bark}
-            strokeWidth="2"
-            fill="none"
-          />
-          <circle cx="50" cy="65" r="10" stroke={colors.bark} strokeWidth="2" />
-        </svg>
-      </IconWrap>
+      <VillaWrap aria-hidden>
+        <Villa />
+      </VillaWrap>
       <ScriptTitle>The Venue</ScriptTitle>
-      <BodyItalic style={{ marginTop: "1.5rem" }}>
-        With hearts full of joy and gratitude, we invite you to join us as
-        we celebrate the union of two families and the beginning of a
-        beautiful new chapter.
-      </BodyItalic>
+      <Lead>
+        With hearts full of joy and gratitude, we invite you to join us as we
+        celebrate the union of two families and the beginning of a beautiful
+        new chapter.
+      </Lead>
 
-      <MapWrap>
-        <Placeholder label="Map — Little Home Hotel, Amalemba Rd, Kakamega" ratio="4 / 3" rounded="0" />
-      </MapWrap>
+      <MapFrame>
+        <iframe
+          title="Map — Little Home Hotel, Amalemba Road, Kakamega"
+          src={`https://maps.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&z=15&output=embed`}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+      </MapFrame>
 
-      <Caption>Kindly use the map above</Caption>
-      <LinkBtn
-        href="https://maps.google.com"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Open in Google Maps
-      </LinkBtn>
+      <Centered>
+        <MapNote>Kindly use the map above</MapNote>
+        <br />
+        <MapLink
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in Google Maps
+        </MapLink>
+      </Centered>
     </PageShell>
   );
 }

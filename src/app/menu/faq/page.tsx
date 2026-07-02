@@ -1,37 +1,111 @@
 "use client";
 
+/* Images 14–15 — FAQ. Numbering fixed to be sequential; the design's
+   [time], [date], [preference] and [name + contact] blanks are filled
+   from the rest of the invitation. */
+
 import styled from "styled-components";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import { colors } from "@/theme/tokens";
 
-const TitleWrap = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
+const Head = styled.header`
+  position: relative;
+  padding-left: clamp(3.4rem, 9vw, 5.4rem);
+  margin-bottom: clamp(2.2rem, 6vh, 3.4rem);
 `;
 
-const Eyebrow = styled.p`
+const Monogram = styled.span`
+  position: absolute;
+  left: 0;
+  top: -0.4rem;
   font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 7vw, 3.8rem);
+  line-height: 0.8;
+  color: ${colors.goldBright};
+  user-select: none;
+
+  i {
+    font-style: normal;
+    display: block;
+    transform: translateX(0.42em) translateY(-0.28em);
+  }
+`;
+
+const Caps = styled.h1`
+  font-family: var(--font-display);
+  font-weight: 600;
   font-style: italic;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  color: ${colors.espresso};
+  font-size: clamp(1.5rem, 4.6vw, 2.4rem);
+  letter-spacing: 0.14em;
+  color: ${colors.rust};
   margin: 0;
 `;
 
-const Script = styled.h1`
+const Script = styled.span`
+  display: block;
   font-family: var(--font-script);
+  font-weight: 400;
   font-size: clamp(2.4rem, 7vw, 3.6rem);
-  color: ${colors.bronze};
-  margin: 0.2rem 0 0;
+  letter-spacing: 0.02em;
+  color: ${colors.rust};
+  margin-top: -0.15em;
+  transform: translateX(1.4em);
 `;
 
-const faqs = [
+const List = styled.ol`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: faq;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.7rem, 4.5vh, 2.5rem);
+  max-width: 640px;
+`;
+
+const Item = styled.li`
+  counter-increment: faq;
+`;
+
+const Q = styled.h2`
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.2rem, 3.4vw, 1.55rem);
+  letter-spacing: 0.04em;
+  color: ${colors.espresso};
+  margin: 0 0 0.55rem;
+
+  &::before {
+    content: counter(faq) ".";
+    margin-right: 0.4rem;
+  }
+`;
+
+const A = styled.p`
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 2.9vw, 1.3rem);
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+  color: ${colors.clay};
+  margin: 0;
+
+  a {
+    color: ${colors.rust};
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+
+    &:hover {
+      color: ${colors.bronze};
+    }
+  }
+`;
+
+const faqs: { q: string; a: React.ReactNode }[] = [
   {
     q: "What time should I arrive?",
     a: "We kindly request guests to arrive by 11:00am to allow the celebrations to begin on time.",
@@ -50,7 +124,7 @@ const faqs = [
   },
   {
     q: "Are children invited?",
-    a: "Please reach out to the couple directly for guidance on this.",
+    a: "Kindly check with the couple when you RSVP so we can plan seating for the little ones.",
   },
   {
     q: "Will food be provided?",
@@ -62,11 +136,22 @@ const faqs = [
   },
   {
     q: "Where can guests stay?",
-    a: "We have shared a few accommodation options nearby for guests travelling from out of town.",
+    a: (
+      <>
+        We have shared a few{" "}
+        <Link href="/menu/stay">accommodation options nearby</Link> for guests
+        travelling from out of town.
+      </>
+    ),
   },
   {
     q: "How do I RSVP?",
-    a: "Kindly confirm your attendance through the RSVP section before July 15th.",
+    a: (
+      <>
+        Kindly confirm your attendance through the{" "}
+        <Link href="/menu/rsvp">RSVP section</Link> before July 15th.
+      </>
+    ),
   },
   {
     q: "Can I take photos/videos during the wedding?",
@@ -74,59 +159,35 @@ const faqs = [
   },
   {
     q: "Who can I contact if I have questions?",
-    a: "For any questions or assistance, please reach out via the contact details shared with your invitation.",
+    a: (
+      <>
+        For any questions or assistance, please reach out to:{" "}
+        <a href="tel:0705843839">0705 843839</a> or{" "}
+        <a href="tel:0713859757">0713 859757</a>
+      </>
+    ),
   },
 ];
 
 export default function FaqPage() {
   return (
     <PageShell>
-      <TitleWrap>
-        <Eyebrow>Frequently Asked</Eyebrow>
+      <Head>
+        <Monogram aria-hidden>
+          D<i>F</i>
+        </Monogram>
+        <Caps>FREQUENTLY ASKED</Caps>
         <Script>Questions</Script>
-      </TitleWrap>
+      </Head>
 
-      {faqs.map((f, i) => (
-        <Accordion
-          key={f.q}
-          defaultExpanded={i === 0}
-          sx={{
-            background: "transparent",
-            boxShadow: "none",
-            "&:before": { display: "none" },
-            borderBottom: "1px solid rgba(43,33,28,0.15)",
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon sx={{ color: colors.bronze }} />}
-          >
-            <Typography
-              sx={{
-                fontFamily: "var(--font-display)",
-                fontStyle: "italic",
-                fontWeight: 600,
-                fontSize: "1.15rem",
-                color: colors.espresso,
-              }}
-            >
-              {i + 1}. {f.q}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography
-              sx={{
-                fontFamily: "var(--font-body)",
-                fontStyle: "italic",
-                color: colors.bark,
-                fontSize: "1.05rem",
-                lineHeight: 1.7,
-              }}
-            >
-              {f.a}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+      <List>
+        {faqs.map(({ q, a }) => (
+          <Item key={q}>
+            <Q>{q}</Q>
+            <A>{a}</A>
+          </Item>
+        ))}
+      </List>
     </PageShell>
   );
 }

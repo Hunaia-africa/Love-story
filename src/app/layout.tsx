@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import StyledComponentsRegistry from "@/lib/registry";
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import "./globals.css";
@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "Dave & Faizah | The Traditional Wedding",
   description:
     "You are invited to celebrate the traditional wedding of Dave & Faizah — 14th August 2026, Kakamega Town.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#F6F1E7",
 };
 
 export default function RootLayout({
@@ -24,7 +28,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap"
           rel="stylesheet"
         />
       </head>

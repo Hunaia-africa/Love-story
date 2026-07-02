@@ -1,86 +1,84 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import { colors } from "@/theme/tokens";
 
 const Row = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-
-  @media (max-width: 480px) {
-    gap: 0.9rem;
-  }
+  gap: clamp(0.9rem, 4vw, 2rem);
+  margin-top: 1.6rem;
 `;
 
 const Unit = styled.div`
   text-align: center;
-  min-width: 60px;
+  min-width: 58px;
 `;
 
 const Num = styled.div`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  color: ${colors.bronze};
+  font-weight: 500;
+  font-size: clamp(1.7rem, 5.4vw, 2.4rem);
+  color: ${colors.rust};
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 `;
 
 const Label = styled.div`
   font-family: var(--font-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: clamp(0.6rem, 2vw, 0.78rem);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${colors.bark};
-  margin-top: 2px;
+  color: ${colors.cocoa};
+  margin-top: 4px;
 `;
 
 const Sep = styled.div`
   width: 1px;
-  height: 44px;
-  background: ${colors.bark};
-  opacity: 0.4;
-  margin-top: 6px;
+  align-self: stretch;
+  background: ${colors.espresso};
+  opacity: 0.55;
 `;
 
-function getTimeLeft(target: Date) {
-  const diff = Math.max(0, target.getTime() - Date.now());
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-  return { days, hours, minutes, seconds };
+function getTimeLeft(target: number) {
+  const diff = Math.max(0, target - Date.now());
+  return {
+    days: Math.floor(diff / 86_400_000),
+    hours: Math.floor((diff / 3_600_000) % 24),
+    minutes: Math.floor((diff / 60_000) % 60),
+    seconds: Math.floor((diff / 1000) % 60),
+  };
 }
 
 export default function Countdown({ target }: { target: string }) {
-  const targetDate = new Date(target);
-  const [time, setTime] = useState(() => getTimeLeft(targetDate));
+  const [time, setTime] = useState<ReturnType<typeof getTimeLeft> | null>(null);
 
   useEffect(() => {
-    const id = setInterval(() => setTime(getTimeLeft(targetDate)), 1000);
+    const ts = new Date(target).getTime();
+    setTime(getTimeLeft(ts));
+    const id = setInterval(() => setTime(getTimeLeft(ts)), 1000);
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
-  const units: [string, number][] = [
-    ["Days", time.days],
-    ["Hours", time.hours],
-    ["Minutes", time.minutes],
-    ["Seconds", time.seconds],
+  const units: [string, number | null][] = [
+    ["Days", time?.days ?? null],
+    ["Hours", time?.hours ?? null],
+    ["Minutes", time?.minutes ?? null],
+    ["Seconds", time?.seconds ?? null],
   ];
 
   return (
-    <Row>
+    <Row role="timer" aria-label="Countdown to the wedding day">
       {units.map(([label, value], i) => (
-        <>
-          <Unit key={label}>
-            <Num>{String(value).padStart(2, "0")}</Num>
+        <Fragment key={label}>
+          <Unit>
+            <Num>{value === null ? "–" : value}</Num>
             <Label>{label}</Label>
           </Unit>
-          {i < units.length - 1 && <Sep key={label + "-sep"} />}
-        </>
+          {i < units.length - 1 && <Sep aria-hidden />}
+        </Fragment>
       ))}
     </Row>
   );

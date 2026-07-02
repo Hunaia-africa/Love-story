@@ -1,56 +1,89 @@
-import HomeButton from "@/components/HomeButton";
+"use client";
+
+/* ------------------------------------------------------------------ */
+/*  The scrapbook menu — a 1:1 recreation of the Canva collage page.  */
+/*  Five pieces are tappable; the rest is set dressing.               */
+/* ------------------------------------------------------------------ */
+
+import type { CSSProperties } from "react";
 import {
   MenuWrap,
   Board,
-  Box,
-  Polaroid,
-  PolaroidPhoto,
-  EnvelopeLink,
-  LetterPeek,
+  Decor,
+  CardLink,
+  EnvGroup,
+  Letter,
   LetterScript,
-  EnvelopeBody,
-  EnvelopeFlapShape,
-  EnvelopeSeal,
-  PlaqueLink,
+  LaceTriWrap,
+  Pocket,
+  PocketSide,
+  PocketBottom,
+  FrontFlap,
+  SealWrap,
+  LaceCard,
+  CardEyebrow,
+  CardThe,
+  CardScript,
+  RespondCard,
+  RespondCorner,
+  RespondEyebrow,
+  RespondScript,
+  RespondSmall,
+  RespondCta,
   PlaqueScript,
-  PlaqueSub,
-  RectCard,
-  RectEyebrow,
-  RectScript,
-  RectSmall,
-  DecorFlowers,
-  DecorGlasses,
-  HeaderBlock,
-  KaribuLabel,
-  HeaderScript,
-  FooterNote,
+  PlaqueDate,
+  Hint,
+  LinkRow,
+  SrH1,
 } from "./menu.styles";
+import OrnatePlaque from "@/components/OrnatePlaque";
+import { Polaroid } from "@/components/Photo";
+import {
+  Swans,
+  DriedSprig,
+  RoseCluster,
+  Vine,
+  ChampagneWatercolour,
+  WaxSealRed,
+  FrameCorner,
+} from "@/components/decor";
+import { colors } from "@/theme/tokens";
 
-function SwanDecor() {
-  return (
-    <svg viewBox="0 0 300 140" width="100%" height="100%">
-      <g fill="#F7F2E9" stroke="#c9b896" strokeWidth="1.5">
-        <path d="M60 120 C20 120 10 95 20 75 C10 65 15 45 35 45 C40 30 60 20 75 30 C95 20 115 40 105 60 C120 65 120 90 100 100 C110 115 90 130 60 120 Z" />
-        <path d="M240 120 C280 120 290 95 280 75 C290 65 285 45 265 45 C260 30 240 20 225 30 C205 20 185 40 195 60 C180 65 180 90 200 100 C190 115 210 130 240 120 Z" />
-      </g>
-      <path
-        d="M75 30 Q150 -10 225 30"
-        fill="none"
-        stroke="#c9b896"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
+/** top / left / width / height in % of the board, plus z, tilt, stagger */
+function at(
+  t: number,
+  l: number,
+  w: number,
+  h: number,
+  z = 1,
+  r = 0,
+  i = 0,
+): CSSProperties {
+  return {
+    "--t": `${t}%`,
+    "--l": `${l}%`,
+    "--w": `${w}%`,
+    "--h": `${h}%`,
+    "--z": z,
+    "--r": `${r}deg`,
+    "--i": i,
+  } as CSSProperties;
 }
 
-function GlassesDecor() {
+function LaceTriangle() {
   return (
-    <svg viewBox="0 0 140 200" width="100%" height="100%">
-      <g stroke="#C9A15F" strokeWidth="2" fill="none">
-        <path d="M25 20 L45 70 L25 90 L25 170 M15 170 L35 170" />
-        <path d="M25 20 L5 20" />
-        <path d="M105 40 L120 80 L105 96 L105 170 M95 170 L115 170" />
-      </g>
+    <svg viewBox="0 0 40 34" fill="none" aria-hidden>
+      {[0, 1, 2, 3].map((row) =>
+        Array.from({ length: 4 - row }).map((_, col) => (
+          <circle
+            key={`${row}-${col}`}
+            cx={4 + row * 4.6 + col * 9}
+            cy={5 + row * 8}
+            r={1.9}
+            fill="#7E2727"
+          />
+        )),
+      )}
     </svg>
   );
 }
@@ -58,102 +91,150 @@ function GlassesDecor() {
 export default function MenuPage() {
   return (
     <MenuWrap>
-      <HomeButton />
-
-      <HeaderBlock>
-        <KaribuLabel>Dave &amp; Faizah — 14.08.2026</KaribuLabel>
-        <HeaderScript>The Wedding Menu</HeaderScript>
-      </HeaderBlock>
+      <SrH1>Dave &amp; Faizah — wedding menu</SrH1>
 
       <Board>
-        {/* decorative dried flowers */}
-        <Box $top={11} $left={2} $w={19} $h={24} $z={1}>
-          <DecorFlowers />
-        </Box>
+        {/* ---------- set dressing ---------- */}
+        <Decor style={at(11.5, 1, 21, 26.5, 1, 0, 2)} aria-hidden>
+          <DriedSprig />
+        </Decor>
 
-        {/* The Traditional Wedding - envelope (clickable) */}
-        <Box $top={2} $left={20} $w={34} $h={27} $z={4}>
-          <EnvelopeLink href="/menu/traditional-wedding">
-            <LetterPeek>
-              <LetterScript>The Traditional Wedding</LetterScript>
-            </LetterPeek>
-            <EnvelopeBody>
-              <EnvelopeFlapShape />
-              <EnvelopeSeal />
-            </EnvelopeBody>
-          </EnvelopeLink>
-        </Box>
+        <Decor style={at(60.8, 2.5, 23.5, 19.5, 4, -4, 8)} aria-hidden>
+          <ChampagneWatercolour />
+        </Decor>
 
-        {/* swans, decorative */}
-        <Box $top={25} $left={12} $w={36} $h={16} $z={2}>
-          <SwanDecor />
-        </Box>
+        <Decor style={at(43.2, 60, 27, 17.5, 2, 0, 7)} aria-hidden>
+          <RoseCluster />
+        </Decor>
 
-        {/* couple photo top right, decorative */}
-        <Box $top={3} $left={53} $w={30} $h={23} $z={2} $rotate={2}>
-          <Polaroid $tilt={0}>
-            <PolaroidPhoto>Dave &amp; Faizah</PolaroidPhoto>
-          </Polaroid>
-        </Box>
+        {/* ---------- 1 · envelope → traditional wedding ---------- */}
+        <CardLink
+          href="/menu/traditional-wedding"
+          style={at(3.2, 19.5, 36, 30.5, 4, 0, 0)}
+          aria-label="Open the invitation: The Traditional Wedding"
+        >
+          <EnvGroup>
+            <Letter>
+              <LaceTriWrap $side="left" aria-hidden>
+                <LaceTriangle />
+              </LaceTriWrap>
+              <LaceTriWrap $side="right" aria-hidden>
+                <LaceTriangle />
+              </LaceTriWrap>
+              <LetterScript>
+                The
+                <br />
+                Traditional
+                <br />
+                Wedding
+              </LetterScript>
+            </Letter>
+            <Pocket>
+              <PocketSide $side="left" />
+              <PocketSide $side="right" />
+              <PocketBottom />
+              <FrontFlap />
+              <SealWrap>
+                <WaxSealRed />
+              </SealWrap>
+            </Pocket>
+          </EnvGroup>
+        </CardLink>
 
-        {/* Click here for the Details (clickable) */}
-        <Box $top={27} $left={55} $w={25} $h={17} $z={2} $rotate={-2}>
-          <RectCard href="/menu/details">
-            <RectEyebrow>Click here for the</RectEyebrow>
-            <RectScript>Details</RectScript>
-          </RectCard>
-        </Box>
+        {/* swans nestle in front of the envelope */}
+        <Decor style={at(25.8, 13, 37, 17.5, 5, 0, 4)} aria-hidden>
+          <Swans />
+        </Decor>
 
-        {/* couple selfie photo, decorative */}
-        <Box $top={41} $left={7} $w={29} $h={19} $z={2} $rotate={-2}>
-          <Polaroid>
-            <PolaroidPhoto>Dave &amp; Faizah</PolaroidPhoto>
-          </Polaroid>
-        </Box>
+        {/* ---------- polaroids ---------- */}
+        <Decor style={at(4, 52.5, 30, 22.5, 2, 0.6, 1)}>
+          <Polaroid label="Us, toasting" ratio="4 / 3" tilt={0} />
+        </Decor>
 
-        {/* Our Love Story (clickable) */}
-        <Box $top={43} $left={31} $w={32} $h={18} $z={3} $rotate={-1}>
-          <PlaqueLink href="/menu/love-story" $dark>
-            <div>
-              <PlaqueScript>Our Love Story</PlaqueScript>
-            </div>
-          </PlaqueLink>
-        </Box>
+        <Decor style={at(41.8, 6, 30, 21.5, 2, -1.4, 5)}>
+          <Polaroid label="A selfie of us" ratio="4 / 3" tilt={0} />
+        </Decor>
 
-        {/* white rose flowers, decorative */}
-        <Box $top={44} $left={63} $w={24} $h={15} $z={1}>
-          <DecorFlowers />
-        </Box>
+        {/* ---------- 2 · details card ---------- */}
+        <CardLink
+          href="/menu/details"
+          style={at(26.8, 55.5, 25, 17.5, 3, 0, 3)}
+          aria-label="Click here for the details"
+        >
+          <LaceCard>
+            <CardEyebrow>CLICK HERE FOR</CardEyebrow>
+            <CardThe>THE</CardThe>
+            <CardScript>Details</CardScript>
+          </LaceCard>
+        </CardLink>
 
-        {/* champagne glasses, decorative */}
-        <Box $top={62} $left={4} $w={22} $h={16} $z={2} $rotate={-6}>
-          <DecorGlasses>
-            <GlassesDecor />
-          </DecorGlasses>
-        </Box>
+        <Decor style={at(24.6, 70.5, 16.5, 16.5, 4, 0, 6)} aria-hidden>
+          <Vine />
+        </Decor>
 
-        {/* Save The Date (clickable) */}
-        <Box $top={56} $left={27} $w={27} $h={36} $z={2} $rotate={1}>
-          <PlaqueLink href="/menu/save-the-date">
-            <div>
-              <PlaqueScript>Save The Date</PlaqueScript>
-              <PlaqueSub>14.08.2026</PlaqueSub>
-            </div>
-          </PlaqueLink>
-        </Box>
+        {/* ---------- 3 · our love story plaque ---------- */}
+        <CardLink
+          href="/menu/love-story"
+          style={at(43.6, 29.5, 34.5, 14.5, 5, -0.5, 6)}
+          aria-label="Read our love story"
+        >
+          <OrnatePlaque fill={colors.chocolate} variant="wide">
+            <PlaqueScript $size="5.6cqw">Our Love Story</PlaqueScript>
+          </OrnatePlaque>
+        </CardLink>
 
-        {/* Please Respond (clickable) */}
-        <Box $top={57} $left={54} $w={26} $h={32} $z={2} $rotate={-1}>
-          <RectCard href="/menu/rsvp">
-            <RectEyebrow>Please</RectEyebrow>
-            <RectScript>Respond</RectScript>
-            <RectSmall>join us to celebrate this occasion</RectSmall>
-            <RectSmall>Click here</RectSmall>
-          </RectCard>
-        </Box>
+        {/* ---------- 4 · save the date plaque ---------- */}
+        <CardLink
+          href="/menu/save-the-date"
+          style={at(55.8, 26.5, 28, 37, 3, 0.5, 9)}
+          aria-label="Save the date — 14.08.2026"
+        >
+          <OrnatePlaque fill={colors.taupe} variant="tall">
+            <PlaqueScript>
+              Save The
+              <br />
+              Date
+            </PlaqueScript>
+            <PlaqueDate>14.08.2026</PlaqueDate>
+          </OrnatePlaque>
+        </CardLink>
+
+        {/* ---------- 5 · please respond ---------- */}
+        <CardLink
+          href="/menu/rsvp"
+          style={at(56.2, 55, 25.5, 33, 3, 0, 10)}
+          aria-label="Please respond — RSVP"
+        >
+          <RespondCard>
+            {(["tl", "tr", "bl", "br"] as const).map((p) => (
+              <RespondCorner key={p} $pos={p} aria-hidden>
+                <FrameCorner />
+              </RespondCorner>
+            ))}
+            <RespondEyebrow>PLEASE</RespondEyebrow>
+            <RespondScript>Respond</RespondScript>
+            <RespondSmall>
+              join us to celebrate
+              <br />
+              this occasion
+            </RespondSmall>
+            <RespondCta>CLICK HERE</RespondCta>
+          </RespondCard>
+        </CardLink>
       </Board>
 
-      <FooterNote>Tap any card to open it</FooterNote>
+      <Hint>Tap a card to open it</Hint>
+      <LinkRow aria-label="Wedding pages">
+        <a href="/menu/traditional-wedding">The Wedding</a>
+        <span aria-hidden>·</span>
+        <a href="/menu/details">Details</a>
+        <span aria-hidden>·</span>
+        <a href="/menu/love-story">Our Love Story</a>
+        <span aria-hidden>·</span>
+        <a href="/menu/save-the-date">Save the Date</a>
+        <span aria-hidden>·</span>
+        <a href="/menu/rsvp">RSVP</a>
+      </LinkRow>
     </MenuWrap>
   );
 }

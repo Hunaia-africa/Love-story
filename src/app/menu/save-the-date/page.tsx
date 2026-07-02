@@ -1,116 +1,146 @@
 "use client";
 
+/* Image 4 — gold line-art florals, ghost DF monogram, countdown. */
+
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import Countdown from "@/components/Countdown";
+import { ScriptTitle } from "@/components/Typography";
+import { GoldCornerFloral, Twig, PinIcon } from "@/components/decor";
 import { colors } from "@/theme/tokens";
 
-const Wrap = styled.div`
-  text-align: center;
-  padding-top: 1rem;
+const Corner = styled.div<{ $pos: "tr" | "bl" }>`
+  position: fixed;
+  width: clamp(150px, 24vw, 300px);
+  z-index: 0;
+  pointer-events: none;
+  color: ${colors.gold};
+  ${(p) =>
+    p.$pos === "tr"
+      ? "top: -8px; right: -10px;"
+      : "bottom: -8px; left: -10px; transform: rotate(180deg);"}
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
 `;
 
-const Monogram = styled.div`
-  position: relative;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const GhostLetters = styled.div`
+const Ghost = styled.span`
   position: absolute;
+  top: -3.2rem;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(4rem, 16vw, 8rem);
-  color: ${colors.creamDark};
-  opacity: 0.7;
-  letter-spacing: 0.05em;
+  font-size: clamp(9rem, 26vw, 15rem);
+  letter-spacing: -0.06em;
+  color: rgba(226, 197, 138, 0.22);
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
 `;
 
-const Script = styled.h1`
+const TwigWrap = styled.span`
+  display: block;
+  width: clamp(74px, 10vw, 110px);
+  margin: 0 auto 0.2rem;
+  color: #57493b;
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+`;
+
+const Head = styled.header`
   position: relative;
-  font-family: var(--font-script);
-  font-size: clamp(2.6rem, 9vw, 4.6rem);
-  color: ${colors.bronze};
-  margin: 0;
+  text-align: center;
+  padding-top: 2.2rem;
 `;
 
 const DateLine = styled.p`
+  margin: clamp(2.6rem, 7vh, 4.2rem) 0 0;
   font-family: var(--font-display);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  color: ${colors.cocoa};
-  margin: 2rem 0 0.5rem;
+  font-size: clamp(1.2rem, 3.4vw, 1.75rem);
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  color: ${colors.rust};
+  text-align: center;
 `;
 
-const LocationRow = styled.div`
+const Place = styled.p`
+  margin: clamp(2.4rem, 6.5vh, 4rem) 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  margin-top: 2rem;
-`;
-
-const Pin = styled.span`
-  width: 22px;
-  height: 22px;
-  border-radius: 50% 50% 50% 0;
-  background: ${colors.bronze};
-  transform: rotate(-45deg);
-`;
-
-const LocationText = styled.p`
+  gap: 0.8rem;
   font-family: var(--font-display);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 1.4rem;
-  color: ${colors.espresso};
-  margin: 0;
-`;
-
-const SubLocation = styled.p`
-  font-family: var(--font-display);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.95rem;
+  font-size: clamp(1.4rem, 4.4vw, 2.15rem);
+  letter-spacing: 0.22em;
+  text-indent: 0.1em;
   color: ${colors.bark};
-  margin: 1.2rem 0 0;
+
+  svg {
+    width: clamp(22px, 3.4vw, 30px);
+    height: auto;
+    color: #8a5a33;
+    flex: none;
+  }
 `;
 
-const CountdownLabel = styled.p`
+const SubPlace = styled.p`
+  margin: clamp(1.8rem, 5vh, 3rem) 0 0;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-size: clamp(0.95rem, 2.6vw, 1.35rem);
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  color: ${colors.clay};
+  text-align: center;
+`;
+
+const CountHead = styled.h2`
+  margin: clamp(2.6rem, 7vh, 4.4rem) 0 1.6rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 3.2vw, 1.6rem);
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: ${colors.rust};
+  text-align: center;
   text-decoration: underline;
-  text-underline-offset: 6px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  color: ${colors.bronze};
-  margin: 3rem 0 0;
+  text-underline-offset: 7px;
+  text-decoration-thickness: 1.5px;
 `;
 
 export default function SaveTheDatePage() {
   return (
     <PageShell>
-      <Wrap>
-        <Monogram>
-          <GhostLetters>DF</GhostLetters>
-          <Script>Save The Date</Script>
-        </Monogram>
+      <Corner $pos="tr" aria-hidden>
+        <GoldCornerFloral />
+      </Corner>
+      <Corner $pos="bl" aria-hidden>
+        <GoldCornerFloral />
+      </Corner>
 
-        <DateLine>14th August 2026</DateLine>
+      <Head>
+        <Ghost aria-hidden>DF</Ghost>
+        <TwigWrap aria-hidden>
+          <Twig />
+        </TwigWrap>
+        <ScriptTitle>Save The Date</ScriptTitle>
+      </Head>
 
-        <LocationRow>
-          <Pin />
-          <LocationText>Kakamega Town</LocationText>
-        </LocationRow>
-        <SubLocation>Opposite Little Homes Amalemba</SubLocation>
+      <DateLine>14TH AUGUST 2026</DateLine>
 
-        <CountdownLabel>The Countdown</CountdownLabel>
-        <Countdown target="2026-08-14T09:00:00" />
-      </Wrap>
+      <Place>
+        <PinIcon aria-hidden />
+        KAKAMEGA TOWN
+      </Place>
+
+      <SubPlace>OPPOSITE LITTLE HOMES AMALEMBA</SubPlace>
+
+      <CountHead>THE COUNTDOWN</CountHead>
+      <Countdown target="2026-08-14T09:00:00+03:00" />
     </PageShell>
   );
 }

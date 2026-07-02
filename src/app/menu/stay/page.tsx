@@ -1,71 +1,101 @@
 "use client";
 
+/* Image 8 — Where To Stay: three options + room photo + booking note. */
+
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
-import Placeholder from "@/components/Placeholder";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
+import { PhotoPlaceholder } from "@/components/Photo";
 import { colors } from "@/theme/tokens";
 
-const Layout = styled.div`
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 2.5rem;
-  align-items: start;
-  margin-top: 2.5rem;
+const Lead = styled(BodyItalic)`
+  max-width: 46ch;
+  margin: 1.4rem auto 0;
+  text-align: left;
 
-  @media (max-width: 720px) {
+  @media (max-width: 640px) {
+    text-align: center;
+  }
+`;
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(1.6rem, 5vw, 3rem);
+  align-items: center;
+  margin-top: clamp(2.2rem, 6vh, 3.4rem);
+
+  @media (max-width: 700px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const List = styled.div`
+const List = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: clamp(1.8rem, 5vh, 2.8rem);
 `;
 
-const Item = styled.div`
-  border-left: 2px solid ${colors.bronze};
-  padding-left: 1rem;
-`;
-
-const Name = styled.p`
+const Name = styled.h2`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: ${colors.espresso};
-  margin: 0 0 0.3rem;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 3.8vw, 1.9rem);
+  letter-spacing: 0.06em;
+  color: #6f6257;
+  margin: 0 0 0.5rem;
+
+  &::before {
+    content: "•";
+    color: ${colors.espresso};
+    margin-right: 0.55rem;
+  }
 `;
 
-const Desc = styled.p`
+const Blurb = styled.p`
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 1.05rem;
-  color: ${colors.bark};
+  font-weight: 500;
+  font-size: clamp(1.02rem, 2.7vw, 1.25rem);
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+  color: ${colors.clay};
   margin: 0;
+  padding-left: 1.15rem;
 `;
 
-const Footer = styled.p`
-  text-align: center;
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: ${colors.cocoa};
-  margin-top: 3rem;
+const RoomPhoto = styled.div`
+  width: 100%;
+  max-width: 340px;
+  justify-self: center;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(43, 33, 28, 0.2);
+`;
+
+const Note = styled(BodyItalic)`
+  margin-top: clamp(2.6rem, 7vh, 4rem);
+  color: ${colors.espresso};
+  font-weight: 600;
+  max-width: 44ch;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const hotels = [
   {
     name: "Kakamega Golf Hotel",
-    desc: "A comfortable stay in the heart of Kakamega",
+    blurb: "A comfortable stay in the heart of Kakamega",
   },
   {
     name: "Petrichor House",
-    desc: "A peaceful retreat, good for a large group of people.",
+    blurb: "A peaceful retreat, good for a large group of people.",
   },
   {
     name: "Amanda Resort",
-    desc: "Spacious suites for a home-away-from-home feel",
+    blurb: "Spacious suites for a home-away-from-home feel",
   },
 ];
 
@@ -73,27 +103,29 @@ export default function StayPage() {
   return (
     <PageShell>
       <ScriptTitle>Where To Stay</ScriptTitle>
-      <BodyItalic style={{ marginTop: "1.2rem" }}>
+      <Lead>
         For our guests travelling to Kakamega, we have put together a few
         accommodation options nearby for your convenience.
-      </BodyItalic>
+      </Lead>
 
-      <Layout>
+      <Row>
         <List>
           {hotels.map((h) => (
-            <Item key={h.name}>
+            <li key={h.name}>
               <Name>{h.name}</Name>
-              <Desc>{h.desc}</Desc>
-            </Item>
+              <Blurb>{h.blurb}</Blurb>
+            </li>
           ))}
         </List>
-        <Placeholder label="Hotel room photo" ratio="3 / 4" rounded="10px" />
-      </Layout>
+        <RoomPhoto>
+          <PhotoPlaceholder label="Hotel suite" ratio="3 / 4" radius="22px" />
+        </RoomPhoto>
+      </Row>
 
-      <Footer>
+      <Note>
         Kindly confirm availability directly with the accommodation before
         booking
-      </Footer>
+      </Note>
     </PageShell>
   );
 }

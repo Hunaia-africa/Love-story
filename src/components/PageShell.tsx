@@ -1,73 +1,144 @@
 "use client";
 
-import styled from "styled-components";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import styled, { keyframes } from "styled-components";
 import Link from "next/link";
 import { colors } from "@/theme/tokens";
-import HomeButton from "@/components/HomeButton";
+
+const rise = keyframes`
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
 
 const Wrap = styled.div<{ $dark?: boolean }>`
   min-height: 100dvh;
   width: 100%;
-  background: ${(p) => (p.$dark ? colors.espresso : colors.cream)};
+  background: ${(p) => (p.$dark ? colors.espressoDeep : colors.cream)};
   color: ${(p) => (p.$dark ? colors.ivory : colors.espresso)};
   position: relative;
-  padding: 96px 7vw 80px;
+  padding: 104px 7vw 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: clip;
 
   @media (max-width: 640px) {
-    padding: 88px 6vw 64px;
+    padding: 92px 6vw 72px;
   }
 `;
 
-const CloseBtn = styled(Link)<{ $dark?: boolean }>`
+const RoundBtn = styled.button<{ $dark?: boolean }>`
   position: fixed;
-  top: 24px;
-  right: 28px;
-  z-index: 50;
+  top: 22px;
+  z-index: 60;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${(p) => (p.$dark ? "rgba(247,242,233,0.1)" : "rgba(43,33,28,0.08)")};
-  border: 1px solid ${(p) => (p.$dark ? "rgba(247,242,233,0.35)" : "rgba(43,33,28,0.25)")};
+  cursor: pointer;
+  background: ${(p) => (p.$dark ? "rgba(246,241,231,0.1)" : "rgba(46,36,29,0.07)")};
+  border: 1px solid
+    ${(p) => (p.$dark ? "rgba(246,241,231,0.4)" : "rgba(46,36,29,0.28)")};
   color: inherit;
-  font-size: 1.3rem;
-  font-family: var(--font-body);
-  transition: transform 0.25s ease, background 0.25s ease;
+  backdrop-filter: blur(3px);
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
 
   &:hover {
-    transform: rotate(90deg);
     background: ${colors.gold};
     color: ${colors.espresso};
   }
 `;
 
-const Content = styled.div`
+const CloseBtn = styled(RoundBtn)`
+  right: 24px;
+  &:hover {
+    transform: rotate(90deg);
+  }
+`;
+
+const HomeLink = styled(Link)<{ $dark?: boolean }>`
+  position: fixed;
+  top: 22px;
+  left: 24px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${(p) => (p.$dark ? "rgba(246,241,231,0.1)" : "rgba(46,36,29,0.07)")};
+  border: 1px solid
+    ${(p) => (p.$dark ? "rgba(246,241,231,0.4)" : "rgba(46,36,29,0.28)")};
+  color: inherit;
+  backdrop-filter: blur(3px);
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+
+  &:hover {
+    transform: scale(1.08);
+    background: ${colors.gold};
+    color: ${colors.espresso};
+  }
+`;
+
+const Content = styled.div<{ $wide?: boolean }>`
   width: 100%;
-  max-width: 900px;
+  max-width: ${(p) => (p.$wide ? "1040px" : "860px")};
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  animation: ${rise} 0.5s ease both;
 `;
+
+function MailGlyph() {
+  return (
+    <svg width="18" height="15" viewBox="0 0 22 17" fill="none" aria-hidden>
+      <rect x="1" y="1" width="20" height="15" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M1.5 2.5 L11 10 L20.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function PageShell({
   children,
   dark = false,
+  wide = false,
+  bare = false,
 }: {
   children: React.ReactNode;
   dark?: boolean;
+  wide?: boolean;
+  /** bare = no cream padding wrapper (full-bleed pages) */
+  bare?: boolean;
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") router.push("/menu");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [router]);
+
   return (
-    <Wrap $dark={dark}>
-      <HomeButton dark={dark} />
-      <CloseBtn href="/menu" $dark={dark} aria-label="Back to menu">
-        ✕
+    <Wrap $dark={dark} style={bare ? { padding: 0 } : undefined}>
+      <HomeLink href="/" $dark={dark} aria-label="Back to the envelope">
+        <MailGlyph />
+      </HomeLink>
+      <CloseBtn
+        $dark={dark}
+        aria-label="Close and return to the menu"
+        onClick={() => router.push("/menu")}
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
       </CloseBtn>
-      <Content>{children}</Content>
+      {bare ? children : <Content $wide={wide}>{children}</Content>}
     </Wrap>
   );
 }
