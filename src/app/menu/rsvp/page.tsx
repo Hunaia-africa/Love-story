@@ -29,8 +29,11 @@ const Side = styled.div<{ $side: "left" | "right" }>`
     height: auto;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 900px) {
     opacity: 0.4;
+  }
+  @media (max-width: 640px) {
+    display: none;
   }
 `;
 

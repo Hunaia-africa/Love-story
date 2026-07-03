@@ -22,7 +22,7 @@ import { colors } from "@/theme/tokens";
 const Framed = styled.div`
   position: relative;
   width: 100%;
-  padding: clamp(2.6rem, 7vw, 4.6rem) clamp(1.2rem, 5vw, 3.4rem);
+  padding: clamp(2.2rem, 7vw, 4.6rem) clamp(1rem, 5vw, 3.4rem);
 `;
 
 /* double rules top & bottom, like the reference */
@@ -40,7 +40,7 @@ const Rule = styled.span<{ $pos: "top" | "bottom" }>`
 
 const InnerBorder = styled.span`
   position: absolute;
-  inset: clamp(2.1rem, 5.4vw, 3.4rem);
+  inset: clamp(1.5rem, 5.4vw, 3.4rem);
   border: 1.5px solid ${colors.espresso};
   outline: 1px solid ${colors.espresso};
   outline-offset: 3px;
@@ -50,7 +50,7 @@ const InnerBorder = styled.span`
 
 const Corner = styled.span<{ $pos: "tl" | "tr" | "bl" | "br" }>`
   position: absolute;
-  width: clamp(72px, 12vw, 128px);
+  width: clamp(56px, 12vw, 128px);
   aspect-ratio: 1;
   color: #b07845;
   pointer-events: none;
@@ -106,6 +106,12 @@ const Grid = styled.div`
   gap: clamp(2rem, 6vh, 3.4rem) clamp(1rem, 6vw, 3rem);
   max-width: 620px;
   margin: 0 auto;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+    gap: 2.3rem;
+    max-width: 340px;
+  }
 `;
 
 const Item = styled.div`

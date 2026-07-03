@@ -54,6 +54,10 @@ const Script = styled.span`
   color: ${colors.rust};
   margin-top: -0.15em;
   transform: translateX(1.4em);
+
+  @media (max-width: 480px) {
+    transform: translateX(0.7em);
+  }
 `;
 
 const List = styled.div`

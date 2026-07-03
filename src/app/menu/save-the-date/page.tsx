@@ -16,6 +16,11 @@ import { colors } from "@/theme/tokens";
 const Corner = styled.div<{ $pos: "tr" | "bl" }>`
   position: fixed;
   width: clamp(150px, 24vw, 300px);
+
+  @media (max-width: 640px) {
+    width: 116px;
+  }
+
   z-index: 0;
   pointer-events: none;
   color: ${colors.gold};
@@ -72,14 +77,21 @@ const DateLine = styled.p`
   text-indent: 0.28em;
   color: ${colors.rust};
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 1.08rem;
+    letter-spacing: 0.18em;
+    text-indent: 0.18em;
+  }
 `;
 
 const Place = styled.p`
   margin: clamp(2.4rem, 6.5vh, 4rem) 0 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 0.25rem 0.8rem;
   font-family: var(--font-display);
   font-size: clamp(1.4rem, 4.4vw, 2.15rem);
   letter-spacing: 0.22em;
@@ -92,6 +104,12 @@ const Place = styled.p`
     color: #8a5a33;
     flex: none;
   }
+
+  @media (max-width: 480px) {
+    font-size: 1.18rem;
+    letter-spacing: 0.12em;
+    gap: 0.2rem 0.55rem;
+  }
 `;
 
 const SubPlace = styled.p`
@@ -100,6 +118,12 @@ const SubPlace = styled.p`
   font-size: clamp(0.95rem, 2.6vw, 1.35rem);
   letter-spacing: 0.24em;
   text-indent: 0.24em;
+
+  @media (max-width: 480px) {
+    letter-spacing: 0.15em;
+    text-indent: 0.15em;
+  }
+
   color: ${colors.clay};
   text-align: center;
 `;
@@ -113,6 +137,12 @@ const CountHead = styled.h2`
   text-indent: 0.2em;
   color: ${colors.rust};
   text-align: center;
+
+  @media (max-width: 480px) {
+    letter-spacing: 0.13em;
+    text-indent: 0.13em;
+  }
+
   text-decoration: underline;
   text-underline-offset: 7px;
   text-decoration-thickness: 1.5px;

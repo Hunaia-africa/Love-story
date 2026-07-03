@@ -45,6 +45,10 @@ const Kicker = styled.p`
   font-size: clamp(1.05rem, 3vw, 1.45rem);
   letter-spacing: 0.14em;
   color: #4b2f1d;
+
+  @media (max-width: 480px) {
+    letter-spacing: 0.1em;
+  }
 `;
 
 const Chapter = styled.div`
@@ -124,7 +128,7 @@ const DarkPara = styled(Para)`
 
 /* interlude */
 const Interlude = styled.section`
-  padding: clamp(7rem, 26vh, 14rem) 6vw;
+  padding: clamp(4.5rem, 22vh, 14rem) 6vw;
   text-align: center;
 `;
 
@@ -149,11 +153,20 @@ const Collage = styled.div`
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr 1fr;
+    gap: clamp(1.1rem, 4.5vw, 1.6rem);
   }
 `;
 
 const BigShot = styled.div`
   grid-row: span 2;
+
+  /* phones: hero shot goes full width, the two smaller share a row below */
+  @media (max-width: 640px) {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    width: min(100%, 420px);
+    justify-self: center;
+  }
 `;
 
 const SprigOverlay = styled.span`
@@ -170,6 +183,13 @@ const SprigOverlay = styled.span`
     width: 100%;
     height: auto;
   }
+
+  @media (max-width: 640px) {
+    left: auto;
+    right: 2%;
+    bottom: -4%;
+    width: clamp(46px, 14vw, 64px);
+  }
 `;
 
 const Paragraphs = styled.div`
@@ -178,10 +198,23 @@ const Paragraphs = styled.div`
   gap: 1.9rem;
 `;
 
-/* moments strip */
+/* moments strip — GSAP drift on desktop, native swipe on phones */
 const Moments = styled.section`
   padding: clamp(2rem, 6vh, 4rem) 0 clamp(3rem, 8vh, 5rem);
   overflow: hidden;
+
+  @media (max-width: 720px) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 8vw;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `;
 
 const MomentsLabel = styled.p`
@@ -193,19 +226,31 @@ const MomentsLabel = styled.p`
   text-indent: 0.32em;
   text-transform: uppercase;
   color: ${colors.softBrownText};
+
+  @media (max-width: 720px) {
+    position: sticky;
+    left: 0;
+    width: 100vw;
+  }
 `;
 
 const Track = styled.div`
   display: flex;
   gap: clamp(1rem, 2.6vw, 1.8rem);
   width: max-content;
+  margin-inline: auto;
   padding: 0 6vw;
   will-change: transform;
+
+  @media (max-width: 720px) {
+    padding: 0.4rem 8vw 1rem;
+    will-change: auto;
+  }
 `;
 
 const Tile = styled.figure<{ $tilt: number }>`
   margin: 0;
-  width: clamp(180px, 26vw, 280px);
+  width: clamp(200px, 26vw, 280px);
   flex: none;
   background: #fdfbf6;
   padding: 3.5% 3.5% 9%;
@@ -218,15 +263,23 @@ const Tile = styled.figure<{ $tilt: number }>`
     transition: filter 0.35s ease, transform 0.6s ease;
   }
 
-  &:hover {
-    transform: rotate(0deg) translateY(-8px) scale(1.03);
-    box-shadow: 0 24px 44px rgba(43, 33, 28, 0.26);
-    z-index: 2;
-    position: relative;
+  @media (max-width: 720px) {
+    width: min(62vw, 250px);
+    scroll-snap-align: center;
+    transform: rotate(${(p) => p.$tilt * 0.6}deg);
+  }
 
-    img {
-      filter: saturate(1.06);
-      transform: scale(1.05);
+  @media (hover: hover) {
+    &:hover {
+      transform: rotate(0deg) translateY(-8px) scale(1.03);
+      box-shadow: 0 24px 44px rgba(43, 33, 28, 0.26);
+      z-index: 2;
+      position: relative;
+
+      img {
+        filter: saturate(1.06);
+        transform: scale(1.05);
+      }
     }
   }
 `;
@@ -332,6 +385,7 @@ export default function LoveStoryPage() {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root || prefersReducedMotion()) return;
+    const mm = gsap.matchMedia();
 
     const ctx = gsap.context(() => {
       /* filmstrip: each frame wipes open, photo settles */
@@ -380,24 +434,27 @@ export default function LoveStoryPage() {
         );
       });
 
-      /* moments strip drifts with the scroll */
-      const track = root.querySelector<HTMLElement>("[data-track]");
-      if (track) {
+      /* moments strip drifts with the scroll — desktop only; phones swipe it
+         natively. Distance is measured so every tile passes through view. */
+      mm.add("(min-width: 721px)", () => {
+        const track = root.querySelector<HTMLElement>("[data-track]");
+        if (!track) return;
         gsap.fromTo(
           track,
-          { xPercent: 4 },
+          { x: 60 },
           {
-            xPercent: -22,
+            x: () => -Math.max(0, track.scrollWidth - window.innerWidth),
             ease: "none",
             scrollTrigger: {
               trigger: track.parentElement,
               start: "top bottom",
               end: "bottom top",
               scrub: 0.6,
+              invalidateOnRefresh: true,
             },
           },
         );
-      }
+      });
 
       /* finale: photo parallax + the arch letters breathe apart */
       const bg = root.querySelector<HTMLElement>("[data-finale-bg] img");
@@ -431,6 +488,7 @@ export default function LoveStoryPage() {
     }, root);
 
     return () => {
+      mm.revert();
       ctx.revert();
       ScrollTrigger.refresh();
     };
@@ -570,9 +628,6 @@ export default function LoveStoryPage() {
               { p: photos.momentYellow, t: -1.2 },
               { p: photos.momentClose, t: 2.2 },
               { p: photos.filmThatch, t: -1.6 },
-              { p: photos.momentLaugh, t: 1.2 },
-              { p: photos.momentCouch, t: -2.2 },
-              { p: photos.momentYellow, t: 1.8 },
             ].map(({ p, t }, i) => (
               <Tile key={i} $tilt={t}>
                 <Img photo={p} ratio="4 / 5" position="50% 30%" />
