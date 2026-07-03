@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import StyledComponentsRegistry from "@/lib/registry";
 import ThemeRegistry from "@/theme/ThemeRegistry";
+import SmoothScroll from "@/components/motion/SmoothScroll";
+import Cursor from "@/components/motion/Cursor";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,7 +36,11 @@ export default function RootLayout({
       </head>
       <body>
         <StyledComponentsRegistry>
-          <ThemeRegistry>{children}</ThemeRegistry>
+          <ThemeRegistry>
+            <SmoothScroll />
+            {children}
+            <Cursor />
+          </ThemeRegistry>
         </StyledComponentsRegistry>
       </body>
     </html>

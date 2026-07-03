@@ -47,6 +47,13 @@ export const Piece = styled.div`
   animation-delay: calc(var(--i, 0) * 75ms);
 `;
 
+/** gsap-driven pointer-parallax target; must stay free of CSS transforms */
+export const Depth = styled.div`
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+`;
+
 export const Decor = styled(Piece)`
   pointer-events: none;
 
@@ -54,6 +61,12 @@ export const Decor = styled(Piece)`
     width: 100%;
     height: 100%;
   }
+`;
+
+export const SwayDecor = styled(Decor)`
+  animation:
+    ${settle} 0.55s ease both calc(var(--i, 0) * 75ms),
+    sway 8s ease-in-out calc(1.4s + var(--i, 0) * -1.1s) infinite;
 `;
 
 export const CardLink = styled(Link)`
@@ -175,7 +188,7 @@ export const Pocket = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 57%;
+  height: 52%;
   z-index: 2;
   border-radius: 2px;
   background: linear-gradient(180deg, #a5824f 0%, ${colors.kraft} 46%, #8a6a40 100%);
@@ -206,23 +219,37 @@ export const PocketBottom = styled.span`
   clip-path: polygon(0 100%, 50% 44%, 100% 100%);
 `;
 
-export const FrontFlap = styled.span`
+/* the opened flap, standing up behind the letter */
+export const BackFlap = styled.span`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 72%;
-  background: linear-gradient(196deg, #b39060 0%, #9c7a4d 62%, #8f6d43 100%);
-  clip-path: polygon(0 0, 100% 0, 50.5% 100%);
-  filter: drop-shadow(0 0.7cqw 0.9cqw rgba(43, 30, 15, 0.26));
+  bottom: 52%;
+  left: 2%;
+  right: 2%;
+  height: 42%;
+  z-index: 0;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+  background: linear-gradient(180deg, #7d5c36 0%, #8f6d43 78%);
+  filter: drop-shadow(0 -0.3cqw 0.8cqw rgba(43, 30, 15, 0.18));
+
+  /* maroon lace lining peeking along the flap edges */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 5% 4% 0;
+    clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(126, 39, 39, 0.55) 0 22%, transparent 26%),
+      linear-gradient(180deg, #6e4f2c 0%, #7d5c36 80%);
+  }
 `;
 
 export const SealWrap = styled.span`
   position: absolute;
-  top: 68%;
+  top: 16%;
   left: 50%;
-  width: 24%;
+  width: 25%;
   transform: translate(-50%, -50%);
+  z-index: 3;
   filter: drop-shadow(0 0.5cqw 0.9cqw rgba(60, 10, 10, 0.4));
 
   svg {

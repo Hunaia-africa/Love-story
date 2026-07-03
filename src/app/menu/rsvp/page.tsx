@@ -2,12 +2,14 @@
 
 /* Image 5 — "Kindly Rsvp" + dark card form with gold pill button. */
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import PageShell from "@/components/PageShell";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
 import { BrownSideFloral } from "@/components/decor";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal, useDraw } from "@/components/motion/fx";
 import { colors, radii } from "@/theme/tokens";
 
 const Side = styled.div<{ $side: "left" | "right" }>`
@@ -189,6 +191,9 @@ const Success = styled.div`
 type Attendance = "accepts" | "declines" | null;
 
 export default function RsvpPage() {
+  const floralsRef = useRef<HTMLDivElement>(null);
+  useDraw(floralsRef, { trigger: "load", duration: 2.2, stagger: 0.03 });
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState<Attendance>(null);
@@ -214,19 +219,26 @@ export default function RsvpPage() {
 
   return (
     <PageShell>
-      <Side $side="left" aria-hidden>
-        <BrownSideFloral />
-      </Side>
-      <Side $side="right" aria-hidden>
-        <BrownSideFloral />
-      </Side>
+      <div ref={floralsRef}>
+        <Side $side="left" aria-hidden>
+          <BrownSideFloral />
+        </Side>
+        <Side $side="right" aria-hidden>
+          <BrownSideFloral />
+        </Side>
+      </div>
 
-      <ScriptTitle>Kindly Rsvp</ScriptTitle>
-      <Intro>
-        We would love it if you would join us to celebrate this occasion —
-        please respond by July 15<sup>th</sup>
-      </Intro>
+      <ScriptTitle>
+        <SplitWords text="Kindly Rsvp" trigger="load" delay={0.3} stagger={0.11} duration={1.3} />
+      </ScriptTitle>
+      <Reveal delay={0.55} y={26}>
+        <Intro>
+          We would love it if you would join us to celebrate this occasion —
+          please respond by July 15<sup>th</sup>
+        </Intro>
+      </Reveal>
 
+      <Reveal delay={0.35} y={48} scale={0.98} duration={1.15}>
       <Card onSubmit={submit} noValidate>
         {sent ? (
           <Success role="status">
@@ -290,11 +302,12 @@ export default function RsvpPage() {
 
             {error && <ErrorMsg role="alert">{error}</ErrorMsg>}
 
-            <Submit type="submit">RSVP</Submit>
+            <Submit type="submit" data-cursor="Send">RSVP</Submit>
             <FinePrint>Only Dave &amp; Faizah will see your response.</FinePrint>
           </>
         )}
       </Card>
+      </Reveal>
     </PageShell>
   );
 }

@@ -81,3 +81,34 @@ svg {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* ---------- custom cursor ---------- */
+html.has-cursor,
+html.has-cursor body,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [data-cursor] {
+  cursor: none;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select {
+  cursor: text;
+}
+
+/* ---------- slow ken-burns for full-bleed photos ---------- */
+@keyframes kenburns {
+  from { transform: scale(1.02) translateY(0); }
+  to   { transform: scale(1.1) translateY(-1.5%); }
+}
+[data-ken] {
+  animation: kenburns 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ---------- gentle idle sway for collage decor ---------- */
+@keyframes sway {
+  0%, 100% { transform: rotate(var(--r, 0deg)) translateY(0); }
+  50%      { transform: rotate(calc(var(--r, 0deg) + 0.7deg)) translateY(-0.5%); }
+}

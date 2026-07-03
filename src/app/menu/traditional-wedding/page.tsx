@@ -1,10 +1,17 @@
 "use client";
 
-/* Image 3 — full-bleed couple photo, dark wash, thin gold-framed box. */
+/* Image 3 — full-bleed couple photograph, dark wash, gold-framed box.
+   Sequence: photo breathes in → frame blooms → rings ink themselves →
+   the names rise word by word → the invitation follows. */
 
+import { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import { GoldRings } from "@/components/decor";
+import { SplitWords } from "@/components/motion/text";
+import { useDraw } from "@/components/motion/fx";
+import { gsap, prefersReducedMotion } from "@/lib/motion";
+import { photos } from "@/lib/assets";
 
 const Stage = styled.div`
   position: relative;
@@ -13,35 +20,30 @@ const Stage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 18vh 6vw;
+  padding: 16vh 6vw;
   overflow: hidden;
+  background: #201610;
+`;
 
-  /* photo placeholder backdrop — swap for the real image later */
-  background:
-    radial-gradient(circle at 24% 18%, rgba(255, 214, 150, 0.28), transparent 42%),
-    radial-gradient(circle at 78% 30%, rgba(214, 160, 110, 0.22), transparent 46%),
-    repeating-linear-gradient(115deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 11px),
-    linear-gradient(160deg, #8a6647 0%, #5d4330 45%, #33241a 100%);
+const Photo = styled.div`
+  position: absolute;
+  inset: -2%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
 
   &::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(24, 16, 11, 0.52);
+    background:
+      radial-gradient(120% 90% at 50% 40%, rgba(24, 16, 11, 0.18), rgba(24, 16, 11, 0.6) 90%),
+      rgba(24, 16, 11, 0.42);
   }
-`;
-
-const PhotoNote = styled.span`
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  color: rgba(246, 241, 231, 0.55);
 `;
 
 const GoldBox = styled.div`
@@ -53,8 +55,8 @@ const GoldBox = styled.div`
   padding: clamp(2.4rem, 6vw, 4rem) clamp(1.6rem, 5vw, 3.4rem);
   text-align: center;
   color: #efe7d5;
-  background: rgba(28, 19, 13, 0.14);
-  backdrop-filter: blur(1px);
+  background: rgba(28, 19, 13, 0.16);
+  backdrop-filter: blur(1.5px);
 `;
 
 const Rings = styled.div`
@@ -65,6 +67,7 @@ const Rings = styled.div`
   svg {
     width: 100%;
     height: auto;
+    overflow: visible;
   }
 `;
 
@@ -72,9 +75,10 @@ const Names = styled.h1`
   font-family: var(--font-script);
   font-weight: 400;
   font-size: clamp(3rem, 11vw, 5.4rem);
-  line-height: 1.1;
+  line-height: 1.15;
   margin: 0 0 1.4rem;
   color: #f1e9d7;
+  text-shadow: 0 3px 22px rgba(0, 0, 0, 0.4);
 `;
 
 const Rule = styled.hr`
@@ -82,6 +86,7 @@ const Rule = styled.hr`
   margin: 0 auto 1.6rem;
   border: none;
   border-top: 1px solid rgba(226, 190, 122, 0.9);
+  transform-origin: center;
 `;
 
 const Invite = styled.p`
@@ -96,20 +101,68 @@ const Invite = styled.p`
 `;
 
 export default function TraditionalWeddingPage() {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const ringsRef = useRef<HTMLDivElement>(null);
+  useDraw(ringsRef, { trigger: "load", delay: 0.7, duration: 1.4 });
+
+  useLayoutEffect(() => {
+    const el = stageRef.current;
+    if (!el || prefersReducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        "[data-photo]",
+        { scale: 1.12, autoAlpha: 0.4 },
+        { scale: 1.02, autoAlpha: 1, duration: 2.4, ease: "power2.out" },
+      );
+      gsap.fromTo(
+        "[data-box]",
+        { autoAlpha: 0, scale: 0.94, y: 26 },
+        { autoAlpha: 1, scale: 1, y: 0, duration: 1.3, delay: 0.35, ease: "power3.out" },
+      );
+      gsap.fromTo(
+        "[data-rule]",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.1, delay: 1.25, ease: "power3.inOut" },
+      );
+      /* keep the photograph breathing */
+      gsap.to("[data-photo] img", {
+        scale: 1.07,
+        duration: 20,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    }, el);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <PageShell dark bare>
-      <Stage>
-        <GoldBox>
-          <Rings aria-hidden>
+      <Stage ref={stageRef}>
+        <Photo data-photo aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={photos.inviteCouple.src} alt="" loading="eager" draggable={false} />
+        </Photo>
+
+        <GoldBox data-box>
+          <Rings ref={ringsRef} aria-hidden>
             <GoldRings />
           </Rings>
-          <Names>Dave &amp; Faizah</Names>
-          <Rule />
+          <Names>
+            <SplitWords text="Dave & Faizah" trigger="load" delay={0.9} stagger={0.12} duration={1.3} />
+          </Names>
+          <Rule data-rule />
           <Invite>
-            You are invited to join us as we celebrate our traditional wedding
+            <SplitWords
+              text="You are invited to join us as we celebrate our traditional wedding"
+              trigger="load"
+              delay={1.35}
+              stagger={0.045}
+              duration={0.9}
+              y={100}
+            />
           </Invite>
         </GoldBox>
-        <PhotoNote>Background photo placeholder — your favourite selfie goes here</PhotoNote>
       </Stage>
     </PageShell>
   );

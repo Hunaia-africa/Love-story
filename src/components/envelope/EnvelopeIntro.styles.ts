@@ -13,38 +13,31 @@ export const Stage = styled.div`
   justify-content: center;
   overflow: hidden;
   padding: 2rem 1.5rem;
-  background:
-    radial-gradient(120% 55% at 50% 38%, rgba(196, 126, 62, 0.4), transparent 62%),
-    radial-gradient(90% 40% at 50% 46%, rgba(240, 178, 96, 0.16), transparent 70%),
-    linear-gradient(180deg, #241a12 0%, #1c130d 42%, #140d09 68%, #0e0906 100%);
+  background: #140d09;
 `;
 
-/* soft water shimmer below the horizon */
-export const Sea = styled.div`
+/* the real sunset photograph, gently drifting (ken-burns) */
+export const PhotoLayer = styled.div`
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 52%;
-  bottom: 0;
+  inset: -2%;
   pointer-events: none;
-  background:
-    radial-gradient(60% 26% at 50% 0%, rgba(232, 168, 92, 0.14), transparent 70%),
-    repeating-linear-gradient(
-      180deg,
-      rgba(240, 196, 128, 0.05) 0 1px,
-      transparent 1px 7px
-    );
-  mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 100%);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 42%;
+  }
 `;
 
-export const BoatsWrap = styled.div`
+/* warm grade + darkening so the type and envelope sit beautifully */
+export const Grade = styled.div`
   position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 66%;
-  height: 34px;
+  inset: 0;
   pointer-events: none;
-  opacity: 0.62;
+  background:
+    radial-gradient(120% 60% at 50% 36%, rgba(74, 38, 12, 0) 0%, rgba(20, 13, 9, 0.55) 78%),
+    linear-gradient(180deg, rgba(20, 13, 9, 0.62) 0%, rgba(20, 13, 9, 0.28) 34%, rgba(20, 13, 9, 0.45) 72%, rgba(14, 9, 6, 0.82) 100%);
 `;
 
 export const Vignette = styled.div`
@@ -83,6 +76,16 @@ export const Names = styled.h1`
   text-shadow: 0 6px 34px rgba(0, 0, 0, 0.55);
 `;
 
+const envIn = keyframes`
+  from { opacity: 0; transform: translateY(30px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const idleFloat = keyframes`
+  0%, 100% { transform: translateY(0) rotateX(0.001deg); }
+  50%      { transform: translateY(-7px) rotateX(0.001deg); }
+`;
+
 /* ---------------- envelope ---------------- */
 
 export const EnvelopeButton = styled.button<{ $open: boolean }>`
@@ -94,6 +97,7 @@ export const EnvelopeButton = styled.button<{ $open: boolean }>`
   perspective: 1500px;
   border-radius: 12px;
   transition: transform 0.4s ease;
+  animation: ${envIn} 1s cubic-bezier(0.2, 0.9, 0.25, 1) 0.85s both;
 
   @media (hover: hover) {
     &:hover {
@@ -112,6 +116,11 @@ export const EnvelopeBody = styled.div<{ $open: boolean }>`
     0 30px 70px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 236, 200, 0.35);
   transform-style: preserve-3d;
+  ${(p) =>
+    !p.$open &&
+    css`
+      animation: ${idleFloat} 5.5s ease-in-out 2.2s infinite;
+    `}
   transition: transform 0.9s cubic-bezier(0.6, 0, 0.3, 1) 0.55s;
   transform: ${(p) =>
     p.$open ? "translateY(26px) scale(1.05)" : "translateY(0) scale(1)"};

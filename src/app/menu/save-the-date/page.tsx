@@ -1,12 +1,16 @@
 "use client";
 
-/* Image 4 — gold line-art florals, ghost DF monogram, countdown. */
+/* Image 4 — the florals ink themselves in from the corners, the ghost
+   monogram drifts with the scroll, and the countdown ticks alive. */
 
+import { useRef } from "react";
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import Countdown from "@/components/Countdown";
 import { ScriptTitle } from "@/components/Typography";
 import { GoldCornerFloral, Twig, PinIcon } from "@/components/decor";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal, Parallax, useDraw } from "@/components/motion/fx";
 import { colors } from "@/theme/tokens";
 
 const Corner = styled.div<{ $pos: "tr" | "bl" }>`
@@ -23,6 +27,7 @@ const Corner = styled.div<{ $pos: "tr" | "bl" }>`
   svg {
     width: 100%;
     height: auto;
+    overflow: visible;
   }
 `;
 
@@ -49,6 +54,7 @@ const TwigWrap = styled.span`
   svg {
     width: 100%;
     height: auto;
+    overflow: visible;
   }
 `;
 
@@ -113,34 +119,50 @@ const CountHead = styled.h2`
 `;
 
 export default function SaveTheDatePage() {
+  const cornersRef = useRef<HTMLDivElement>(null);
+  const twigRef = useRef<HTMLSpanElement>(null);
+  useDraw(cornersRef, { trigger: "load", duration: 2.1, stagger: 0.045 });
+  useDraw(twigRef, { trigger: "load", delay: 0.4, duration: 1.4 });
+
   return (
     <PageShell>
-      <Corner $pos="tr" aria-hidden>
-        <GoldCornerFloral />
-      </Corner>
-      <Corner $pos="bl" aria-hidden>
-        <GoldCornerFloral />
-      </Corner>
+      <div ref={cornersRef}>
+        <Corner $pos="tr" aria-hidden>
+          <GoldCornerFloral />
+        </Corner>
+        <Corner $pos="bl" aria-hidden>
+          <GoldCornerFloral />
+        </Corner>
+      </div>
 
       <Head>
-        <Ghost aria-hidden>DF</Ghost>
-        <TwigWrap aria-hidden>
+        <Parallax amount={18} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          <Ghost aria-hidden>DF</Ghost>
+        </Parallax>
+        <TwigWrap ref={twigRef} aria-hidden>
           <Twig />
         </TwigWrap>
-        <ScriptTitle>Save The Date</ScriptTitle>
+        <ScriptTitle>
+          <SplitWords text="Save The Date" trigger="load" delay={0.35} stagger={0.11} duration={1.3} />
+        </ScriptTitle>
       </Head>
 
-      <DateLine>14TH AUGUST 2026</DateLine>
+      <DateLine>
+        <SplitWords text="14TH AUGUST 2026" trigger="load" delay={0.85} stagger={0.07} y={100} />
+      </DateLine>
 
-      <Place>
-        <PinIcon aria-hidden />
-        KAKAMEGA TOWN
-      </Place>
+      <Reveal delay={0.2} y={30}>
+        <Place>
+          <PinIcon aria-hidden />
+          KAKAMEGA TOWN
+        </Place>
+        <SubPlace>OPPOSITE LITTLE HOMES AMALEMBA</SubPlace>
+      </Reveal>
 
-      <SubPlace>OPPOSITE LITTLE HOMES AMALEMBA</SubPlace>
-
-      <CountHead>THE COUNTDOWN</CountHead>
-      <Countdown target="2026-08-14T09:00:00+03:00" />
+      <Reveal y={34}>
+        <CountHead>THE COUNTDOWN</CountHead>
+        <Countdown target="2026-08-14T09:00:00+03:00" />
+      </Reveal>
     </PageShell>
   );
 }

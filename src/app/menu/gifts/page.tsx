@@ -2,9 +2,12 @@
 
 /* Image 9 — Gifts Registry with faint doodle wallpaper. */
 
+import { useRef } from "react";
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal, useDraw } from "@/components/motion/fx";
 import {
   GiftSketch,
   BouquetDoodle,
@@ -98,6 +101,9 @@ const Numbers = styled.p`
 `;
 
 export default function GiftsPage() {
+  const giftRef = useRef<HTMLDivElement>(null);
+  useDraw(giftRef, { trigger: "load", delay: 0.1, duration: 1.7, stagger: 0.06 });
+
   return (
     <PageShell>
       <Doodle $t="6%" $l="4%" $w="clamp(90px, 13vw, 160px)" aria-hidden>
@@ -113,33 +119,41 @@ export default function GiftsPage() {
         <BouquetDoodle />
       </Doodle>
 
-      <GiftWrap aria-hidden>
+      <GiftWrap ref={giftRef} aria-hidden>
         <GiftSketch />
       </GiftWrap>
-      <ScriptTitle>Gifts Registry</ScriptTitle>
+      <ScriptTitle>
+        <SplitWords text="Gifts Registry" trigger="load" delay={0.35} stagger={0.11} duration={1.3} />
+      </ScriptTitle>
 
-      <Presence>
-        Your presence is the greatest gift{" "}
-        <span role="img" aria-label="red heart">
-          ❤️
-        </span>
-      </Presence>
+      <Reveal delay={0.65} y={26}>
+        <Presence>
+          Your presence is the greatest gift{" "}
+          <span role="img" aria-label="red heart">
+            ❤️
+          </span>
+        </Presence>
+      </Reveal>
 
-      <Monetary>
-        Should you wish to bless the couple further, monetary gifts towards
-        their new journey will be deeply appreciated.
-      </Monetary>
+      <Reveal y={30}>
+        <Monetary>
+          Should you wish to bless the couple further, monetary gifts towards
+          their new journey will be deeply appreciated.
+        </Monetary>
+      </Reveal>
 
-      <GiftHere>
-        GIFT US HERE!{" "}
-        <span role="img" aria-label="hugging face">
-          🤗
-        </span>
-      </GiftHere>
-      <Numbers>
-        <a href="tel:0705843839">0705 843839</a> or{" "}
-        <a href="tel:0713859757">0713 859757</a>
-      </Numbers>
+      <Reveal y={30}>
+        <GiftHere>
+          GIFT US HERE!{" "}
+          <span role="img" aria-label="hugging face">
+            🤗
+          </span>
+        </GiftHere>
+        <Numbers>
+          <a href="tel:0705843839">0705 843839</a> or{" "}
+          <a href="tel:0713859757">0713 859757</a>
+        </Numbers>
+      </Reveal>
     </PageShell>
   );
 }

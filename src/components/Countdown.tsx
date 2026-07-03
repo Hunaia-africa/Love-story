@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { colors } from "@/theme/tokens";
 
 const Row = styled.div`
@@ -17,6 +17,11 @@ const Unit = styled.div`
   min-width: 58px;
 `;
 
+const tick = keyframes`
+  from { transform: translateY(46%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+`;
+
 const Num = styled.div`
   font-family: var(--font-display);
   font-weight: 500;
@@ -24,6 +29,12 @@ const Num = styled.div`
   color: ${colors.rust};
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
+
+  > span {
+    display: inline-block;
+    animation: ${tick} 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  }
 `;
 
 const Label = styled.div`
@@ -74,7 +85,9 @@ export default function Countdown({ target }: { target: string }) {
       {units.map(([label, value], i) => (
         <Fragment key={label}>
           <Unit>
-            <Num>{value === null ? "–" : value}</Num>
+            <Num>
+              <span key={value ?? "-"}>{value === null ? "–" : value}</span>
+            </Num>
             <Label>{label}</Label>
           </Unit>
           {i < units.length - 1 && <Sep aria-hidden />}

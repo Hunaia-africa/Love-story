@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal } from "@/components/motion/fx";
 import {
   Villa,
   RingsSketch,
@@ -148,20 +150,26 @@ const tiles = [
 export default function DetailsPage() {
   return (
     <PageShell>
-      <ScriptTitle>The Details</ScriptTitle>
-      <Lead>
-        Everything you need for the day — pick a card below and we&rsquo;ll
-        take you there.
-      </Lead>
+      <ScriptTitle>
+        <SplitWords text="The Details" trigger="load" delay={0.3} stagger={0.11} duration={1.3} />
+      </ScriptTitle>
+      <Reveal delay={0.55} y={26}>
+        <Lead>
+          Everything you need for the day — pick a card below and we&rsquo;ll
+          take you there.
+        </Lead>
+      </Reveal>
 
       <Grid>
-        {tiles.map((t) => (
-          <Tile key={t.href} href={t.href}>
-            <TileIcon aria-hidden>{t.icon}</TileIcon>
-            <TileScript>{t.title}</TileScript>
-            <TileSub>{t.sub}</TileSub>
-          </Tile>
-        ))}
+        <Reveal stagger={0.1} y={36} start="top 92%" style={{ display: "contents" }}>
+          {tiles.map((t) => (
+            <Tile key={t.href} href={t.href} data-cursor="Open">
+              <TileIcon aria-hidden>{t.icon}</TileIcon>
+              <TileScript>{t.title}</TileScript>
+              <TileSub>{t.sub}</TileSub>
+            </Tile>
+          ))}
+        </Reveal>
       </Grid>
     </PageShell>
   );

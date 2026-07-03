@@ -7,6 +7,8 @@
 import styled from "styled-components";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal } from "@/components/motion/fx";
 import { colors } from "@/theme/tokens";
 
 const Head = styled.header`
@@ -54,10 +56,7 @@ const Script = styled.span`
   transform: translateX(1.4em);
 `;
 
-const List = styled.ol`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+const List = styled.div`
   counter-reset: faq;
   display: flex;
   flex-direction: column;
@@ -65,7 +64,7 @@ const List = styled.ol`
   max-width: 640px;
 `;
 
-const Item = styled.li`
+const Item = styled.div`
   counter-increment: faq;
 `;
 
@@ -120,11 +119,11 @@ const faqs: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Can I bring a plus one?",
-    a: "Kindly note that we have prepared seating based on the number of guests invited. Please confirm your attendance accordingly.",
+    a: "Kindly note that one invite only admits one. Please confirm your attendance accordingly.",
   },
   {
     q: "Are children invited?",
-    a: "Kindly check with the couple when you RSVP so we can plan seating for the little ones.",
+    a: "We love your children but please leave them at home for this event.",
   },
   {
     q: "Will food be provided?",
@@ -176,17 +175,23 @@ export default function FaqPage() {
         <Monogram aria-hidden>
           D<i>F</i>
         </Monogram>
-        <Caps>FREQUENTLY ASKED</Caps>
-        <Script>Questions</Script>
+        <Caps>
+          <SplitWords text="FREQUENTLY ASKED" trigger="load" delay={0.25} stagger={0.07} y={100} />
+        </Caps>
+        <Script>
+          <SplitWords text="Questions" trigger="load" delay={0.55} duration={1.3} />
+        </Script>
       </Head>
 
-      <List>
-        {faqs.map(({ q, a }) => (
-          <Item key={q}>
-            <Q>{q}</Q>
-            <A>{a}</A>
-          </Item>
-        ))}
+      <List role="list">
+        <Reveal stagger={0.09} y={30} start="top 92%" style={{ display: "contents" }}>
+          {faqs.map(({ q, a }) => (
+            <Item role="listitem" key={q}>
+              <Q>{q}</Q>
+              <A>{a}</A>
+            </Item>
+          ))}
+        </Reveal>
       </List>
     </PageShell>
   );

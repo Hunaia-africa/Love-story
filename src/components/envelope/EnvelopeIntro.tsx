@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Stage,
-  Sea,
-  BoatsWrap,
+  PhotoLayer,
+  Grade,
   Vignette,
   Eyebrow,
   Names,
@@ -25,7 +25,9 @@ import {
   FadeOverlay,
   SrOnly,
 } from "./EnvelopeIntro.styles";
-import { HarbourBoats, WaxSealGold } from "@/components/decor";
+import { WaxSealGold } from "@/components/decor";
+import { SplitWords } from "@/components/motion/text";
+import { photos } from "@/lib/assets";
 
 export default function EnvelopeIntro() {
   const router = useRouter();
@@ -59,20 +61,38 @@ export default function EnvelopeIntro() {
 
   return (
     <Stage>
-      <Sea aria-hidden />
-      <BoatsWrap aria-hidden>
-        <HarbourBoats style={{ width: "100%", height: "100%" }} />
-      </BoatsWrap>
+      <PhotoLayer aria-hidden data-ken>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photos.sunset.src} alt="" loading="eager" draggable={false} />
+      </PhotoLayer>
+      <Grade aria-hidden />
       <Vignette aria-hidden />
 
-      <Eyebrow>You&rsquo;ve got mail from</Eyebrow>
-      <Names>Dave &amp; Faizah</Names>
+      <Eyebrow>
+        <SplitWords
+          text="You've got mail from"
+          trigger="load"
+          delay={0.15}
+          stagger={0.05}
+          y={110}
+        />
+      </Eyebrow>
+      <Names>
+        <SplitWords
+          text="Dave & Faizah"
+          trigger="load"
+          delay={0.4}
+          stagger={0.12}
+          duration={1.4}
+        />
+      </Names>
 
       <EnvelopeButton
         onClick={handleOpen}
         $open={open}
         aria-label="Open the envelope to view the wedding invitation"
         disabled={open}
+        data-cursor="Open"
       >
         <EnvelopeBody $open={open}>
           <LetterCard $open={open} aria-hidden>

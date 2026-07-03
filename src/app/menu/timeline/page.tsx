@@ -2,8 +2,12 @@
 
 /* Image 7 — ornate corner frame, "Wedding TIMELINE", 2-column schedule. */
 
+import { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal, useDraw } from "@/components/motion/fx";
+import { gsap, prefersReducedMotion } from "@/lib/motion";
 import {
   FrameCorner,
   TentIcon,
@@ -152,35 +156,61 @@ const schedule = [
 ];
 
 export default function TimelinePage() {
+  const frameRef = useRef<HTMLDivElement>(null);
+  useDraw(frameRef, { trigger: "load", duration: 1.8, stagger: 0.04 });
+
+  /* the frame assembles itself: rules stretch out, border breathes in */
+  useLayoutEffect(() => {
+    const el = frameRef.current;
+    if (!el || prefersReducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        "[data-rule]",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.4, delay: 0.25, ease: "power3.inOut", transformOrigin: "center" },
+      );
+      gsap.fromTo(
+        "[data-inner]",
+        { autoAlpha: 0, scale: 0.985 },
+        { autoAlpha: 0.75, scale: 1, duration: 1.2, delay: 0.55, ease: "power2.out" },
+      );
+    }, el);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <PageShell wide>
-      <Framed>
+      <Framed ref={frameRef}>
         {(["tl", "tr", "bl", "br"] as const).map((p) => (
           <Corner key={p} $pos={p} aria-hidden>
             <FrameCorner />
           </Corner>
         ))}
-        <Rule $pos="top" aria-hidden />
-        <Rule $pos="bottom" aria-hidden />
-        <InnerBorder aria-hidden />
+        <Rule $pos="top" data-rule aria-hidden />
+        <Rule $pos="bottom" data-rule aria-hidden />
+        <InnerBorder data-inner aria-hidden />
 
         <TitleWrap>
           <TitleScript>
-            Wedding
-            <TitleCaps>TIMELINE</TitleCaps>
+            <SplitWords text="Wedding" trigger="load" delay={0.35} duration={1.3} />
+            <TitleCaps>
+              <SplitWords text="TIMELINE" trigger="load" delay={0.6} stagger={0.06} y={100} />
+            </TitleCaps>
           </TitleScript>
         </TitleWrap>
 
         <Grid>
-          {schedule.map(({ time, event, Icon: Glyph }) => (
-            <Item key={event}>
-              <Icon aria-hidden>
-                <Glyph />
-              </Icon>
-              <Time>{time}</Time>
-              <Event>{event}</Event>
-            </Item>
-          ))}
+          <Reveal stagger={0.12} y={34} start="top 90%" style={{ display: "contents" }}>
+            {schedule.map(({ time, event, Icon: Glyph }) => (
+              <Item key={event}>
+                <Icon aria-hidden>
+                  <Glyph />
+                </Icon>
+                <Time>{time}</Time>
+                <Event>{event}</Event>
+              </Item>
+            ))}
+          </Reveal>
         </Grid>
       </Framed>
     </PageShell>

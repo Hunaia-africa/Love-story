@@ -2,10 +2,13 @@
 
 /* Image 6 — villa etching, "The Venue", Google map, closing note. */
 
+import { useRef } from "react";
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
 import { Villa } from "@/components/decor";
+import { SplitWords } from "@/components/motion/text";
+import { Reveal, useDraw } from "@/components/motion/fx";
 import { colors } from "@/theme/tokens";
 
 const VillaWrap = styled.div`
@@ -72,19 +75,27 @@ const Centered = styled.div`
 const MAP_QUERY = "Little Home Hotel, Amalemba Rd, Kakamega, Kenya";
 
 export default function VenuePage() {
+  const villaRef = useRef<HTMLDivElement>(null);
+  useDraw(villaRef, { trigger: "load", delay: 0.15, duration: 2, stagger: 0.05 });
+
   return (
     <PageShell>
-      <VillaWrap aria-hidden>
+      <VillaWrap ref={villaRef} aria-hidden>
         <Villa />
       </VillaWrap>
-      <ScriptTitle>The Venue</ScriptTitle>
-      <Lead>
-        With hearts full of joy and gratitude, we invite you to join us as we
-        celebrate the union of two families and the beginning of a beautiful
-        new chapter.
-      </Lead>
+      <ScriptTitle>
+        <SplitWords text="The Venue" trigger="load" delay={0.4} stagger={0.11} duration={1.3} />
+      </ScriptTitle>
+      <Reveal delay={0.7} y={26}>
+        <Lead>
+          With hearts full of joy and gratitude, we invite you to join us as we
+          celebrate the union of two families and the beginning of a beautiful
+          new chapter.
+        </Lead>
+      </Reveal>
 
-      <MapFrame>
+      <Reveal y={40} scale={0.985} duration={1.2}>
+        <MapFrame>
         <iframe
           title="Map — Little Home Hotel, Amalemba Road, Kakamega"
           src={`https://maps.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&z=15&output=embed`}
@@ -92,9 +103,11 @@ export default function VenuePage() {
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
-      </MapFrame>
+        </MapFrame>
+      </Reveal>
 
-      <Centered>
+      <Reveal y={24}>
+        <Centered>
         <MapNote>Kindly use the map above</MapNote>
         <br />
         <MapLink
@@ -103,8 +116,9 @@ export default function VenuePage() {
           rel="noopener noreferrer"
         >
           Open in Google Maps
-        </MapLink>
-      </Centered>
+          </MapLink>
+        </Centered>
+      </Reveal>
     </PageShell>
   );
 }

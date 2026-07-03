@@ -2,10 +2,10 @@
 
 import styled from "styled-components";
 import { WaxPin } from "@/components/decor";
+import type { Photo as PhotoAsset } from "@/lib/assets";
 
 /* ------------------------------------------------------------------ */
-/*  PhotoPlaceholder — elegant stand-in until the real photos arrive. */
-/*  Sepia duotone wash + film grain + a small camera mark + label.    */
+/*  Img — the workhorse. Real photograph, cover-fit, optional tone.   */
 /* ------------------------------------------------------------------ */
 
 const Frame = styled.div<{ $ratio?: string; $radius?: string; $tone?: "warm" | "mono" }>`
@@ -14,10 +14,64 @@ const Frame = styled.div<{ $ratio?: string; $radius?: string; $tone?: "warm" | "
   ${(p) => (p.$ratio ? `aspect-ratio: ${p.$ratio};` : "height: 100%;")}
   border-radius: ${(p) => p.$radius || "2px"};
   overflow: hidden;
-  background: ${(p) =>
-    p.$tone === "mono"
-      ? "linear-gradient(150deg, #d9d4cb 0%, #a9a29a 45%, #6e675f 100%)"
-      : "linear-gradient(150deg, #e6d4b4 0%, #c2996a 45%, #8a6642 100%)"};
+  background: #d8cfc0;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    ${(p) => (p.$tone === "mono" ? "filter: grayscale(1) contrast(1.05);" : "")}
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 34px rgba(46, 30, 16, 0.18);
+    pointer-events: none;
+  }
+`;
+
+export function Img({
+  photo,
+  ratio,
+  radius,
+  tone = "warm",
+  position,
+  className,
+  loading = "lazy",
+}: {
+  photo: PhotoAsset;
+  ratio?: string;
+  radius?: string;
+  tone?: "warm" | "mono";
+  /** CSS object-position, e.g. "50% 20%" to favour faces */
+  position?: string;
+  className?: string;
+  loading?: "lazy" | "eager";
+}) {
+  return (
+    <Frame $ratio={ratio} $radius={radius} $tone={tone} className={className}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={photo.src}
+        alt={photo.alt}
+        loading={loading}
+        draggable={false}
+        style={position ? { objectPosition: position } : undefined}
+      />
+    </Frame>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  PhotoPlaceholder — still here for the one shot we're waiting on.  */
+/* ------------------------------------------------------------------ */
+
+const GhostFrame = styled(Frame)`
+  background: linear-gradient(150deg, #e6d4b4 0%, #c2996a 45%, #8a6642 100%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -28,17 +82,7 @@ const Frame = styled.div<{ $ratio?: string; $radius?: string; $tone?: "warm" | "
     inset: 0;
     background:
       radial-gradient(circle at 30% 22%, rgba(255, 248, 230, 0.5), transparent 55%),
-      repeating-linear-gradient(
-        115deg,
-        rgba(60, 42, 26, 0.05) 0 1px,
-        transparent 1px 9px
-      );
-  }
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 42px rgba(46, 30, 16, 0.35);
+      repeating-linear-gradient(115deg, rgba(60, 42, 26, 0.05) 0 1px, transparent 1px 9px);
   }
 `;
 
@@ -79,22 +123,20 @@ export function PhotoPlaceholder({
   label,
   ratio,
   radius,
-  tone = "warm",
   className,
 }: {
   label: string;
   ratio?: string;
   radius?: string;
-  tone?: "warm" | "mono";
   className?: string;
 }) {
   return (
-    <Frame $ratio={ratio} $radius={radius} $tone={tone} className={className} role="img" aria-label={`Photo placeholder: ${label}`}>
+    <GhostFrame $ratio={ratio} $radius={radius} className={className} role="img" aria-label={`Photo placeholder: ${label}`}>
       <Mark>
         <CameraGlyph />
         <Label>{label}</Label>
       </Mark>
-    </Frame>
+    </GhostFrame>
   );
 }
 
@@ -125,18 +167,20 @@ const PinWrap = styled.div`
 `;
 
 export function Polaroid({
-  label,
+  photo,
   ratio = "4 / 5",
   tilt = 0,
   pinned = false,
   tone = "warm",
+  position,
   className,
 }: {
-  label: string;
+  photo: PhotoAsset;
   ratio?: string;
   tilt?: number;
   pinned?: boolean;
   tone?: "warm" | "mono";
+  position?: string;
   className?: string;
 }) {
   return (
@@ -146,7 +190,7 @@ export function Polaroid({
           <WaxPin />
         </PinWrap>
       )}
-      <PhotoPlaceholder label={label} ratio={ratio} tone={tone} />
+      <Img photo={photo} ratio={ratio} tone={tone} position={position} />
     </PolaroidCard>
   );
 }
