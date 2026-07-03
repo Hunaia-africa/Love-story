@@ -56,7 +56,7 @@ const Script = styled.span`
   transform: translateX(1.4em);
 
   @media (max-width: 480px) {
-    transform: translateX(0.7em);
+    transform: translateX(0.55em);
   }
 `;
 

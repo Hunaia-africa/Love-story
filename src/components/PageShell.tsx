@@ -93,6 +93,14 @@ const Content = styled.div<{ $wide?: boolean }>`
   animation: ${rise} 0.5s ease both;
 `;
 
+/* Bare (full-bleed) pages still need to span the flex column — without
+   this, a wide inner element (e.g. a horizontal strip) makes the whole
+   page shrink-wrap to that width and drift off-centre on phones. */
+const Bare = styled.div`
+  width: 100%;
+  min-width: 0;
+`;
+
 function MailGlyph() {
   return (
     <svg width="18" height="15" viewBox="0 0 22 17" fill="none" aria-hidden>
@@ -138,7 +146,7 @@ export default function PageShell({
           <path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </CloseBtn>
-      {bare ? children : <Content $wide={wide}>{children}</Content>}
+      {bare ? <Bare>{children}</Bare> : <Content $wide={wide}>{children}</Content>}
     </Wrap>
   );
 }

@@ -202,10 +202,12 @@ export default function RsvpPage() {
   const [attendance, setAttendance] = useState<Attendance>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (sending) return;
     if (!name.trim()) {
       setError("Please tell us your name.");
       return;
@@ -215,9 +217,24 @@ export default function RsvpPage() {
       return;
     }
     setError("");
-    /* TODO: post { name, email, attendance, message } to your
-       Google Sheet / Formspree / API route when it's ready. */
-    setSent(true);
+    setSending(true);
+    try {
+      const res = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, attendance, message }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) {
+        setError(data.error || "We couldn't send your RSVP just now — please try again.");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("We couldn't reach the RSVP service — please check your connection and try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -305,7 +322,9 @@ export default function RsvpPage() {
 
             {error && <ErrorMsg role="alert">{error}</ErrorMsg>}
 
-            <Submit type="submit" data-cursor="Send">RSVP</Submit>
+            <Submit type="submit" data-cursor="Send" disabled={sending}>
+              {sending ? "Sending\u2026" : "RSVP"}
+            </Submit>
             <FinePrint>Only Dave &amp; Faizah will see your response.</FinePrint>
           </>
         )}
