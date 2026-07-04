@@ -149,7 +149,7 @@ export default function TraditionalWeddingPage() {
             <GoldRings />
           </Rings>
           <Names>
-            <SplitWords text="Dave & Faizah" trigger="load" delay={0.9} stagger={0.12} duration={1.3} />
+            <SplitWords text="Faizah & Dave" trigger="load" delay={0.9} stagger={0.12} duration={1.3} />
           </Names>
           <Rule data-rule />
           <Invite>

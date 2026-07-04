@@ -9,7 +9,7 @@ import { Resend } from "resend";
 export const runtime = "nodejs";
 
 const TO = "otienotamia@gmail.com";
-const FROM = "Dave & Faizah RSVP <onboarding@resend.dev>";
+const FROM = "Faizah & Dave RSVP <onboarding@resend.dev>";
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) =>
@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     `Email: ${email || "not shared"}`,
     `Message: ${message || "—"}`,
     ``,
-    `Dave & Faizah · 14.08.2026 · Kakamega Town`,
+    `Faizah & Dave · 14.08.2026 · Kakamega Town`,
   ].join("\n");
 
   try {

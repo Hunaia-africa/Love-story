@@ -79,7 +79,7 @@ export default function EnvelopeIntro() {
       </Eyebrow>
       <Names>
         <SplitWords
-          text="Dave & Faizah"
+          text="Faizah, Dave & The Family"
           trigger="load"
           delay={0.4}
           stagger={0.12}

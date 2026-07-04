@@ -6,9 +6,9 @@ import Cursor from "@/components/motion/Cursor";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dave & Faizah | The Traditional Wedding",
+  title: "Faizah & Dave | The Traditional Wedding",
   description:
-    "You are invited to celebrate the traditional wedding of Dave & Faizah — 14th August 2026, Kakamega Town.",
+    "You are invited to celebrate the traditional wedding of Faizah & Dave — 14th August 2026, Kakamega Town.",
 };
 
 export const viewport: Viewport = {

@@ -153,12 +153,12 @@ const Event = styled.p`
 `;
 
 const schedule = [
-  { time: "11:00am", event: "Arrival", Icon: TentIcon },
-  { time: "12:00pm", event: "Ceremony", Icon: RingsSketch },
-  { time: "2:00pm", event: "Lunch", Icon: PlateIcon },
-  { time: "3:00pm", event: "Toast", Icon: ToastGlasses },
-  { time: "4:00pm", event: "Cake Cutting", Icon: CakeSketch },
-  { time: "5:00pm", event: "Party Time!", Icon: MusicNotes },
+  { time: "10:00am", event: "Arrival", Icon: TentIcon },
+  // { time: "12:00pm", event: "Ceremony", Icon: RingsSketch },
+  { time: "1:00pm", event: "Lunch", Icon: PlateIcon },
+  { time: "3:00pm", event: "Toast & Cake Cutting", Icon: ToastGlasses },
+  // { time: "4:00pm", event: "Cake Cutting", Icon: CakeSketch },
+  { time: "4:00pm onwards", event: "Party Time!", Icon: MusicNotes },
 ];
 
 export default function TimelinePage() {
