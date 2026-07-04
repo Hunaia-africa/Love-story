@@ -645,7 +645,7 @@ export default function LoveStoryPage() {
 
           <FinaleInner>
             <FinaleNames>
-              <SplitWords text="David & Faizah" stagger={0.12} duration={1.3} />
+              <SplitWords text="Faizah & David" stagger={0.12} duration={1.3} />
             </FinaleNames>
           </FinaleInner>
 

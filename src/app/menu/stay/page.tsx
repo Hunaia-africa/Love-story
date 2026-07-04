@@ -202,7 +202,7 @@ export default function StayPage() {
 
       <Reveal y={28}>
         <Referral>
-          Reach out to David or Faizah for more options
+          Reach out to Faizah or David for more options
         </Referral>
       </Reveal>
     </PageShell>
