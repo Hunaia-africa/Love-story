@@ -201,12 +201,8 @@ export default function StayPage() {
 
       <Reveal y={28}>
         <Referral>
-          Reach out to David or Faizah for more accommodation referrals
+          Reach out to David or Faizah for more options
         </Referral>
-        <Note>
-          Kindly confirm availability directly with the accommodation before
-          booking
-        </Note>
       </Reveal>
     </PageShell>
   );
