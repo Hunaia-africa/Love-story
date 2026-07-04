@@ -150,8 +150,8 @@ export default function GiftsPage() {
           </span>
         </GiftHere>
         <Numbers>
-          <a href="tel:0705843839">0705 843839</a> or{" "}
-          <a href="tel:0713859757">0713 859757</a>
+          <a href="tel:0705843839">Paybill number: 542542</a> <br />Account number:{" "}
+          <a href="tel:0713859757">00701425552910</a>
         </Numbers>
       </Reveal>
     </PageShell>

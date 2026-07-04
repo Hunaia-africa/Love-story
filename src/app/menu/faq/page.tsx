@@ -206,7 +206,7 @@ const A = styled.p`
 const faqs: { q: string; a: React.ReactNode }[] = [
   {
     q: "What time should I arrive?",
-    a: "We kindly request guests to arrive by 11:00am to allow the celebrations to begin on time.",
+    a: "We kindly request guests to arrive by 10:00am to allow the celebrations to begin on time.",
   },
   {
     q: "Is there parking available at the venue?",
