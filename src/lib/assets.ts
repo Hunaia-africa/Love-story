@@ -35,6 +35,9 @@ export const photos = {
   momentYellow: img("moment-yellow.jpg", "A happy evening at home"),
   momentClose: img("moment-close.jpg", "Close together, cheek to cheek"),
 
+  /* where to stay */
+  staySuite: img("stay-suite.jpg", "A warm hotel suite with a large window looking onto lush greenery"),
+
   /* finale */
   ringHand: img("ring-hand.jpg", "Faizah's hand with her ring, raised against the sunset sea"),
 } as const;

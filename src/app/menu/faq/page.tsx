@@ -2,8 +2,10 @@
 
 /* Images 14–15 — FAQ. Numbering fixed to be sequential; the design's
    [time], [date], [preference] and [name + contact] blanks are filled
-   from the rest of the invitation. */
+   from the rest of the invitation.
+   Each question folds open on tap — first one open by default. */
 
+import { useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
@@ -64,26 +66,118 @@ const List = styled.div`
   counter-reset: faq;
   display: flex;
   flex-direction: column;
-  gap: clamp(1.7rem, 4.5vh, 2.5rem);
   max-width: 640px;
+  border-top: 1px dotted rgba(169, 104, 47, 0.4);
 `;
 
 const Item = styled.div`
   counter-increment: faq;
+  border-bottom: 1px dotted rgba(169, 104, 47, 0.4);
 `;
 
 const Q = styled.h2`
+  margin: 0;
+`;
+
+/* The whole question row is the switch — number, words and seal alike. */
+const Toggle = styled.button`
+  appearance: none;
+  background: none;
+  border: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  padding: clamp(0.95rem, 2.6vh, 1.25rem) 0;
+
   font-family: var(--font-body);
   font-style: italic;
   font-weight: 600;
   font-size: clamp(1.2rem, 3.4vw, 1.55rem);
   letter-spacing: 0.04em;
+  line-height: 1.45;
   color: ${colors.espresso};
-  margin: 0 0 0.55rem;
+  transition: color 0.3s ease;
 
   &::before {
     content: counter(faq) ".";
-    margin-right: 0.4rem;
+    margin-right: -0.35rem;
+  }
+
+  &:hover,
+  &[aria-expanded="true"] {
+    color: ${colors.rust};
+  }
+
+  &:focus-visible {
+    outline: 2px dotted ${colors.gold};
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+`;
+
+const QText = styled.span`
+  flex: 1;
+`;
+
+/* A slim gold "+" that turns into "×" — kin to the line-art florals. */
+const Seal = styled.span<{ $open: boolean }>`
+  position: relative;
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  transform: rotate(${(p) => (p.$open ? 45 : 0)}deg);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    background: ${colors.gold};
+    border-radius: 2px;
+  }
+  &::before {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    margin-top: -0.75px;
+  }
+  &::after {
+    left: 50%;
+    top: 0;
+    height: 100%;
+    width: 1.5px;
+    margin-left: -0.75px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+/* CSS-grid fold: rows animate 0fr -> 1fr, the inner pane just clips. */
+const Fold = styled.div<{ $open: boolean }>`
+  display: grid;
+  grid-template-rows: ${(p) => (p.$open ? "1fr" : "0fr")};
+  transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+  > div {
+    overflow: hidden;
+    min-height: 0;
+    opacity: ${(p) => (p.$open ? 1 : 0)};
+    transform: translateY(${(p) => (p.$open ? 0 : -6)}px);
+    transition: opacity 0.4s ease ${(p) => (p.$open ? "0.12s" : "0s")},
+      transform 0.4s ease ${(p) => (p.$open ? "0.12s" : "0s")};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    > div {
+      transition: none;
+    }
   }
 `;
 
@@ -96,6 +190,7 @@ const A = styled.p`
   line-height: 1.8;
   color: ${colors.clay};
   margin: 0;
+  padding: 0.1rem 2rem clamp(1.2rem, 3vh, 1.5rem) 0;
 
   a {
     color: ${colors.rust};
@@ -173,6 +268,16 @@ const faqs: { q: string; a: React.ReactNode }[] = [
 ];
 
 export default function FaqPage() {
+  const [open, setOpen] = useState<Set<number>>(() => new Set([0]));
+
+  const toggle = (i: number) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+
   return (
     <PageShell>
       <Head>
@@ -189,12 +294,36 @@ export default function FaqPage() {
 
       <List role="list">
         <Reveal stagger={0.09} y={30} start="top 92%" style={{ display: "contents" }}>
-          {faqs.map(({ q, a }) => (
-            <Item role="listitem" key={q}>
-              <Q>{q}</Q>
-              <A>{a}</A>
-            </Item>
-          ))}
+          {faqs.map(({ q, a }, i) => {
+            const isOpen = open.has(i);
+            return (
+              <Item role="listitem" key={q}>
+                <Q>
+                  <Toggle
+                    type="button"
+                    id={`faq-q-${i}`}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-a-${i}`}
+                    data-cursor={isOpen ? "Close" : "Open"}
+                    onClick={() => toggle(i)}
+                  >
+                    <QText>{q}</QText>
+                    <Seal aria-hidden $open={isOpen} />
+                  </Toggle>
+                </Q>
+                <Fold
+                  id={`faq-a-${i}`}
+                  role="region"
+                  aria-labelledby={`faq-q-${i}`}
+                  $open={isOpen}
+                >
+                  <div>
+                    <A>{a}</A>
+                  </div>
+                </Fold>
+              </Item>
+            );
+          })}
         </Reveal>
       </List>
     </PageShell>

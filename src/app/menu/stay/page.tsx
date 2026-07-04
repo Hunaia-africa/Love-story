@@ -5,7 +5,8 @@
 import styled from "styled-components";
 import PageShell from "@/components/PageShell";
 import { ScriptTitle, BodyItalic } from "@/components/Typography";
-import { PhotoPlaceholder } from "@/components/Photo";
+import { Img } from "@/components/Photo";
+import { photos } from "@/lib/assets";
 import { SplitWords } from "@/components/motion/text";
 import { Reveal, Parallax } from "@/components/motion/fx";
 import { colors } from "@/theme/tokens";
@@ -194,7 +195,7 @@ export default function StayPage() {
         </List>
         <RoomPhoto>
           <Parallax amount={10}>
-            <PhotoPlaceholder label="Hotel suite" ratio="3 / 4" radius="22px" />
+            <Img photo={photos.staySuite} ratio="3 / 4" radius="22px" />
           </Parallax>
         </RoomPhoto>
       </Row>
