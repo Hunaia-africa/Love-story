@@ -1,8 +1,10 @@
 "use client";
 
 /* ------------------------------------------------------------------ */
-/*  The scrapbook menu — 1:1 with the Canva collage, now alive:       */
-/*  staggered settle, idle sway, pointer-depth parallax, real photos. */
+/*  The scrapbook menu — reimagined around a single centrepiece:      */
+/*  the toast polaroid, wax-pinned to the heart of the board, with    */
+/*  every card orbiting it. Staggered settle, idle sway,              */
+/*  pointer-depth parallax all intact.                                */
 /* ------------------------------------------------------------------ */
 
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
@@ -41,7 +43,6 @@ import {
 import OrnatePlaque from "@/components/OrnatePlaque";
 import { Polaroid } from "@/components/Photo";
 import {
-  Swans,
   DriedSprig,
   RoseCluster,
   Vine,
@@ -136,29 +137,22 @@ export default function MenuPage() {
       <SrH1>Dave &amp; Faizah — wedding menu</SrH1>
 
       <Board ref={boardRef}>
-        {/* ---------- set dressing ---------- */}
-        <SwayDecor style={at(11.5, 1, 21, 26.5, 1, 0, 2)} aria-hidden>
-          <Depth data-depth={3}>
-            <DriedSprig />
+        {/* ---------- the centrepiece: wax-pinned to the heart ---------- */}
+        <Decor style={at(34, 28, 44, 27, 6, -1.8, 0)}>
+          <Depth data-depth={10}>
+            <Polaroid
+              photo={photos.toast}
+              ratio="4 / 3"
+              position="50% 35%"
+              pinned
+            />
           </Depth>
-        </SwayDecor>
+        </Decor>
 
-        <SwayDecor style={at(60.8, 2.5, 23.5, 19.5, 4, -4, 8)} aria-hidden>
-          <Depth data-depth={7}>
-            <ChampagneWatercolour />
-          </Depth>
-        </SwayDecor>
-
-        <SwayDecor style={at(43.2, 60, 27, 17.5, 2, 0, 7)} aria-hidden>
-          <Depth data-depth={4}>
-            <RoseCluster />
-          </Depth>
-        </SwayDecor>
-
-        {/* ---------- 1 · envelope → traditional wedding ---------- */}
+        {/* ---------- 1 · envelope crowns the top ---------- */}
         <CardLink
           href="/menu/traditional-wedding"
-          style={at(3.2, 19.5, 36, 30.5, 4, 0, 0)}
+          style={at(3, 32, 36, 30.5, 4, 0, 1)}
           aria-label="Open the invitation: The Traditional Wedding"
           data-cursor="Open"
         >
@@ -192,30 +186,10 @@ export default function MenuPage() {
           </Depth>
         </CardLink>
 
-        {/* swans nestle in front of the envelope */}
-        <SwayDecor style={at(25.8, 13, 37, 17.5, 5, 0, 4)} aria-hidden>
-          <Depth data-depth={9}>
-            <Swans />
-          </Depth>
-        </SwayDecor>
-
-        {/* ---------- polaroids ---------- */}
-        <Decor style={at(4, 52.5, 30, 22.5, 2, 0.6, 1)}>
-          <Depth data-depth={5}>
-            <Polaroid photo={photos.toast} ratio="4 / 3" position="50% 35%" />
-          </Depth>
-        </Decor>
-
-        <Decor style={at(41.8, 6, 30, 21.5, 2, -1.4, 5)}>
-          <Depth data-depth={5}>
-            <Polaroid photo={photos.menuSelfie} ratio="4 / 3" position="50% 22%" />
-          </Depth>
-        </Decor>
-
-        {/* ---------- 2 · details card ---------- */}
+        {/* ---------- 2 · details card, upper-right shoulder ---------- */}
         <CardLink
           href="/menu/details"
-          style={at(26.8, 55.5, 25, 17.5, 3, 0, 3)}
+          style={at(23, 68, 25, 17.5, 4, 1.6, 2)}
           aria-label="Click here for the details"
           data-cursor="Details"
         >
@@ -228,16 +202,10 @@ export default function MenuPage() {
           </Depth>
         </CardLink>
 
-        <SwayDecor style={at(24.6, 70.5, 16.5, 16.5, 4, 0, 6)} aria-hidden>
-          <Depth data-depth={8}>
-            <Vine />
-          </Depth>
-        </SwayDecor>
-
-        {/* ---------- 3 · our love story plaque ---------- */}
+        {/* ---------- 3 · love story plaque, upper-left shoulder ---------- */}
         <CardLink
           href="/menu/love-story"
-          style={at(43.6, 29.5, 34.5, 14.5, 5, -0.5, 6)}
+          style={at(27, 2, 34.5, 14.5, 5, -2, 3)}
           aria-label="Read our love story"
           data-cursor="Our Story"
         >
@@ -248,10 +216,10 @@ export default function MenuPage() {
           </Depth>
         </CardLink>
 
-        {/* ---------- 4 · save the date plaque ---------- */}
+        {/* ---------- 4 · save the date, grounding the left ---------- */}
         <CardLink
           href="/menu/save-the-date"
-          style={at(55.8, 26.5, 28, 37, 3, 0.5, 9)}
+          style={at(57, 7.5, 28, 37, 3, -1.4, 4)}
           aria-label="Save the date — 14.08.2026"
           data-cursor="Save It"
         >
@@ -267,10 +235,10 @@ export default function MenuPage() {
           </Depth>
         </CardLink>
 
-        {/* ---------- 5 · please respond ---------- */}
+        {/* ---------- 5 · please respond, grounding the right ---------- */}
         <CardLink
           href="/menu/rsvp"
-          style={at(56.2, 55, 25.5, 33, 3, 0, 10)}
+          style={at(57.5, 63, 25.5, 33, 3, 1.2, 5)}
           aria-label="Please respond — RSVP"
           data-cursor="RSVP"
         >
@@ -292,6 +260,32 @@ export default function MenuPage() {
             </RespondCard>
           </Depth>
         </CardLink>
+
+        {/* ---------- set dressing in the gaps ---------- */}
+        <SwayDecor style={at(2.5, 2.5, 20, 25, 1, 0, 6)} aria-hidden>
+          <Depth data-depth={3}>
+            <DriedSprig />
+          </Depth>
+        </SwayDecor>
+
+        <SwayDecor style={at(5, 75, 23, 15, 1, 0, 7)} aria-hidden>
+          <Depth data-depth={4}>
+            <RoseCluster />
+          </Depth>
+        </SwayDecor>
+
+        <SwayDecor style={at(41, 78, 15.5, 16, 2, 0, 8)} aria-hidden>
+          <Depth data-depth={4}>
+            <Vine />
+          </Depth>
+        </SwayDecor>
+
+        {/* champagne raises a glass right under the toast */}
+        <SwayDecor style={at(62.5, 37.5, 23.5, 19.5, 2, -3, 9)} aria-hidden>
+          <Depth data-depth={7}>
+            <ChampagneWatercolour />
+          </Depth>
+        </SwayDecor>
       </Board>
 
       <Hint>Tap a card to open it</Hint>
