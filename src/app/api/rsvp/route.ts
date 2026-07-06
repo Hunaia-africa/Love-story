@@ -8,7 +8,7 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
-const TO = "otienotamia@gmail.com";
+const TO = "mianzegregory@outlook.com";
 const FROM = "Faizah & Dave RSVP <onboarding@resend.dev>";
 
 const esc = (s: string) =>
